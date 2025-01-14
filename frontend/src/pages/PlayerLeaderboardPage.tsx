@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import axios from "axios";
 import {
   Box,
   Spinner,
@@ -17,7 +18,8 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import axios from "axios";
+import { argbToRgba, parseClubName } from "@/utils/colorUtils";
+import { formatTrophies } from "@/utils/formatTrophies";
 
 interface Player {
   rank: number;
@@ -77,18 +79,6 @@ const PlayerLeaderboardPage = () => {
     setSearchParams({ country: details.value });
   };
 
-  const formatTrophies = (trophies: number) =>
-    trophies === 1 ? "> 100000" : trophies;
-
-  const argbToRgba = (argb: string) => {
-    const alpha = parseInt(argb.slice(2, 4), 16) / 255;
-    const red = parseInt(argb.slice(4, 6), 16);
-    const green = parseInt(argb.slice(6, 8), 16);
-    const blue = parseInt(argb.slice(8, 10), 16);
-
-    return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
-  };
-
   return (
     <Box p={{ base: 4, md: 8 }} maxW="1200px" mx="auto">
       <Heading mb={6} fontSize={{ base: "2xl", md: "3xl" }} textAlign="center">
@@ -142,7 +132,10 @@ const PlayerLeaderboardPage = () => {
               </Table.Cell>
               <Table.Cell>
                 {player.club ? (
-                  <Text>{player.club.name}</Text>
+                  (() => {
+                    const { name, color } = parseClubName(player.club.name);
+                    return <Text color={color}>{name}</Text>;
+                  })()
                 ) : (
                   <Text color="gray.400">No Club</Text>
                 )}
