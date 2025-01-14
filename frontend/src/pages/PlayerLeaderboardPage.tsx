@@ -22,6 +22,7 @@ import axios from "axios";
 interface Player {
   rank: number;
   name: string;
+  nameColor: string;
   trophies: number;
   icon: { id: number };
   club?: { name: string };
@@ -79,6 +80,15 @@ const PlayerLeaderboardPage = () => {
   const formatTrophies = (trophies: number) =>
     trophies === 1 ? "> 100000" : trophies;
 
+  const argbToRgba = (argb: string) => {
+    const alpha = parseInt(argb.slice(2, 4), 16) / 255;
+    const red = parseInt(argb.slice(4, 6), 16);
+    const green = parseInt(argb.slice(6, 8), 16);
+    const blue = parseInt(argb.slice(8, 10), 16);
+
+    return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
+  };
+
   return (
     <Box p={{ base: 4, md: 8 }} maxW="1200px" mx="auto">
       <Heading mb={6} fontSize={{ base: "2xl", md: "3xl" }} textAlign="center">
@@ -125,7 +135,9 @@ const PlayerLeaderboardPage = () => {
                     src={`https://cdn.brawlstars.com/player-icons/${player.icon.id}`}
                     boxSize="24px"
                   />
-                  <Text>{player.name}</Text>
+                  <Text color={argbToRgba(player.nameColor)}>
+                    {player.name}
+                  </Text>
                 </Stack>
               </Table.Cell>
               <Table.Cell>
