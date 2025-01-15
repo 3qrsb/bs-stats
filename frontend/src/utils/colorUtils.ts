@@ -20,7 +20,7 @@ export const tagToColor = (tag: string): string => {
     c8: "#d16eff",
     c9: "#fd6a72",
   };
-  return colorMap[tag] || "#000";
+  return colorMap[tag];
 };
 
 export const parseClubName = (clubName: string) => {
@@ -31,5 +31,5 @@ export const parseClubName = (clubName: string) => {
     const color = tagToColor(tag);
     return { name, color };
   }
-  return { name: clubName, color: "black" };
+  return { name: clubName };
 };
