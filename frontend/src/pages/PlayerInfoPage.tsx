@@ -1,5 +1,4 @@
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
 import {
   Box,
   Heading,
@@ -7,36 +6,16 @@ import {
   Flex,
   Spinner,
   VStack,
-  Stat,
   StatLabel,
   StatValueText,
   Separator,
   StatRoot,
 } from "@chakra-ui/react";
-import axios from "axios";
+import usePlayerInfo from "@/hooks/usePlayerInfo";
 
 const PlayerInfoPage = () => {
   const { tag } = useParams();
-  const [playerInfo, setPlayerInfo] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    const fetchPlayerInfo = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:3000/brawl-stars/players/${tag}`
-        );
-        setPlayerInfo(response.data);
-      } catch (err) {
-        setError("Failed to fetch player information");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPlayerInfo();
-  }, [tag]);
+  const { playerInfo, loading, error } = usePlayerInfo(tag!);
 
   if (loading) {
     return <Spinner size="xl" mt="8" />;
@@ -46,6 +25,14 @@ const PlayerInfoPage = () => {
     return (
       <Box color="red.500" mt="8">
         {error}
+      </Box>
+    );
+  }
+
+  if (!playerInfo) {
+    return (
+      <Box color="red.500" mt="8">
+        Player information not available.
       </Box>
     );
   }
