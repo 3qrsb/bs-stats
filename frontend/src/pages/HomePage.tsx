@@ -13,6 +13,7 @@ import {
 import { InputGroup } from "@/components/ui/input-group";
 import { Button } from "@/components/ui/button";
 import { Tooltip } from "@/components/ui/tooltip";
+import usePlayerInfo from "@/hooks/usePlayerInfo";
 
 const HomePage = () => {
   const [playerTag, setPlayerTag] = useState("");
@@ -23,6 +24,8 @@ const HomePage = () => {
     const savedTags = JSON.parse(localStorage.getItem("recentTags") || "[]");
     setRecentTags(savedTags);
   }, []);
+
+  const { playerInfos, loading, errors } = usePlayerInfo(recentTags);
 
   const handleSearch = () => {
     if (playerTag) {
@@ -93,7 +96,13 @@ const HomePage = () => {
                 showArrow
                 openDelay={200}
                 closeDelay={50}
-                content="test"
+                content={
+                  loading[tag]
+                    ? "Loading..."
+                    : errors[tag]
+                    ? errors[tag]
+                    : playerInfos[tag]?.name || "No name available"
+                }
                 key={tag}
               >
                 <Badge

@@ -15,9 +15,12 @@ import usePlayerInfo from "@/hooks/usePlayerInfo";
 
 const PlayerInfoPage = () => {
   const { tag } = useParams();
-  const { playerInfo, loading, error } = usePlayerInfo(tag!);
+  const { playerInfos, loading, errors } = usePlayerInfo(tag ? [tag] : []);
+  const playerInfo = playerInfos[tag!];
+  const isLoading = loading[tag!];
+  const error = errors[tag!];
 
-  if (loading) {
+  if (isLoading) {
     return <Spinner size="xl" mt="8" />;
   }
 

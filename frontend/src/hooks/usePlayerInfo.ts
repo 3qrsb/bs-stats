@@ -2,31 +2,41 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { PlayerInfo } from "@/types/PlayerInfo";
 
-const usePlayerInfo = (tag: string) => {
-  const [playerInfo, setPlayerInfo] = useState<PlayerInfo | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string>("");
+const usePlayerInfo = (tags: string[]) => {
+  const [playerInfos, setPlayerInfos] = useState<
+    Record<string, PlayerInfo | null>
+  >({});
+  const [loading, setLoading] = useState<Record<string, boolean>>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    const fetchPlayerInfo = async () => {
+    const fetchPlayerInfo = async (tag: string) => {
+      setLoading((prev) => ({ ...prev, [tag]: true }));
+      setErrors((prev) => ({ ...prev, [tag]: "" }));
+
       try {
         const response = await axios.get<PlayerInfo>(
           `http://localhost:3000/brawl-stars/players/${tag}`
         );
-        setPlayerInfo(response.data);
+        setPlayerInfos((prev) => ({ ...prev, [tag]: response.data }));
       } catch (err) {
-        setError(`Failed to fetch player information: ${err}`);
+        setErrors((prev) => ({
+          ...prev,
+          [tag]: `Failed to fetch player information: ${err}`,
+        }));
       } finally {
-        setLoading(false);
+        setLoading((prev) => ({ ...prev, [tag]: false }));
       }
     };
 
-    if (tag) {
-      fetchPlayerInfo();
-    }
-  }, [tag]);
+    tags.forEach((tag) => {
+      if (!playerInfos[tag] && !loading[tag] && !errors[tag]) {
+        fetchPlayerInfo(tag);
+      }
+    });
+  }, [tags, playerInfos, loading, errors]);
 
-  return { playerInfo, loading, error };
+  return { playerInfos, loading, errors };
 };
 
 export default usePlayerInfo;
