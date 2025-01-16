@@ -1,6 +1,4 @@
-import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import axios from "axios";
 import {
   Box,
   Spinner,
@@ -20,15 +18,7 @@ import {
 } from "@/components/ui/select";
 import { argbToRgba, parseClubName } from "@/utils/colorUtils";
 import { formatTrophies } from "@/utils/formatTrophies";
-
-interface Player {
-  rank: number;
-  name: string;
-  nameColor: string;
-  trophies: number;
-  icon: { id: number };
-  club?: { name: string };
-}
+import usePlayerLeaderboard from "@/hooks/usePlayerLeaderboard";
 
 const countries = createListCollection({
   items: [
@@ -40,28 +30,16 @@ const countries = createListCollection({
 });
 
 const PlayerLeaderboardPage = () => {
-  const [leaderboard, setLeaderboard] = useState<Player[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
   const country = searchParams.get("country") || "global";
 
-  useEffect(() => {
-    const fetchLeaderboard = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:3000/leaderboard/players?country=${country}`
-        );
-        setLeaderboard(response.data.items);
-      } catch (err) {
-        setError(`Failed to fetch leaderboard: ${err}`);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const { leaderboard, loading, error } = usePlayerLeaderboard(country);
 
-    fetchLeaderboard();
-  }, [country]);
+  const handleCountryChange = (details: { value: string[] }) => {
+    if (details.value.length > 0) {
+      setSearchParams({ country: details.value[0] });
+    }
+  };
 
   if (loading) {
     return <Spinner size="xl" mt="8" />;
@@ -75,25 +53,22 @@ const PlayerLeaderboardPage = () => {
     );
   }
 
-  const handleCountryChange = (details: { label: string; value: string }) => {
-    setSearchParams({ country: details.value });
-  };
-
   return (
     <Box p={{ base: 4, md: 8 }} maxW="1200px" mx="auto">
       <Heading mb={6} fontSize={{ base: "2xl", md: "3xl" }} textAlign="center">
         Player Leaderboard
       </Heading>
 
-      <Box mb={6} display="flex" justifyContent="center">
+      <Box mb={3} display="flex" justifyContent="center">
         <SelectRoot
           collection={countries}
+          defaultValue={["global"]}
           onValueChange={handleCountryChange}
           mb={4}
           size="md"
-          width={{ base: "100%", sm: "250px" }}
+          width={{ base: "100%", sm: "200px" }}
         >
-          <SelectTrigger>
+          <SelectTrigger clearable>
             <SelectValueText placeholder="Select country" />
           </SelectTrigger>
           <SelectContent>
@@ -106,7 +81,7 @@ const PlayerLeaderboardPage = () => {
         </SelectRoot>
       </Box>
 
-      <Table.Root colorScheme="gray" mb={6}>
+      <Table.Root mb={3}>
         <Table.Header>
           <Table.Row>
             <Table.ColumnHeader>Rank</Table.ColumnHeader>
@@ -121,10 +96,7 @@ const PlayerLeaderboardPage = () => {
               <Table.Cell>{player.rank}</Table.Cell>
               <Table.Cell>
                 <Stack direction="row" align="center" gap={3}>
-                  <Image
-                    src={`https://cdn.brawlstars.com/player-icons/${player.icon.id}`}
-                    boxSize="24px"
-                  />
+                  <Image src={player.icon.id} boxSize="24px" />
                   <Text color={argbToRgba(player.nameColor)}>
                     {player.name}
                   </Text>
@@ -137,7 +109,7 @@ const PlayerLeaderboardPage = () => {
                     return <Text color={color}>{name}</Text>;
                   })()
                 ) : (
-                  <Text color="gray.400">No Club</Text>
+                  <Text>-</Text>
                 )}
               </Table.Cell>
               <Table.Cell>{formatTrophies(player.trophies)}</Table.Cell>
