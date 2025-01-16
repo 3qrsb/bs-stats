@@ -24,3 +24,7 @@ export interface PlayerInfo {
   bestTimeAsBigBrawler: number;
   club?: PlayerClub;
 }
+
+export interface PlayerRanking extends PlayerInfo {
+  rank: number;
+}

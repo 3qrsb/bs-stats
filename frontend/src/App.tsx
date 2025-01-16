@@ -25,7 +25,7 @@ const App = () => {
           }
         />
         <Route
-          path="/leaderboard/global"
+          path="/leaderboard/players"
           element={
             <Layout>
               <PlayerLeaderboardPage />{" "}

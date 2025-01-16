@@ -52,13 +52,13 @@ const Header = () => {
           </MenuTrigger>
           <MenuContent>
             <MenuItem asChild value="player-leaderboard">
-              <a href="/leaderboard/global">Player Leaderboard</a>
+              <a href="/leaderboard/players">Player Leaderboard</a>
             </MenuItem>
             <MenuItem asChild value="brawler-leaderboard">
-              <a href="/leaderboard/brawler">Brawler Leaderboard</a>
+              <a href="/leaderboard/brawlers">Brawler Leaderboard</a>
             </MenuItem>
             <MenuItem asChild value="club-leaderboard">
-              <a href="/leaderboard/club">Club Leaderboard</a>
+              <a href="/leaderboard/clubs">Club Leaderboard</a>
             </MenuItem>
           </MenuContent>
         </MenuRoot>
@@ -91,17 +91,17 @@ const Header = () => {
           <DrawerCloseTrigger color="white" />
           <DrawerBody>
             <Box mb={4} mt={2}>
-              <Link href="/leaderboard/global" color="white">
+              <Link href="/leaderboard/players" color="white">
                 Player Leaderboard
               </Link>
             </Box>
             <Box mb={4}>
-              <Link href="/leaderboard/brawler" color="white">
+              <Link href="/leaderboard/brawlers" color="white">
                 Brawler Leaderboard
               </Link>
             </Box>
             <Box mb={4}>
-              <Link href="/leaderboard/club" color="white">
+              <Link href="/leaderboard/clubs" color="white">
                 Club Leaderboard
               </Link>
             </Box>
