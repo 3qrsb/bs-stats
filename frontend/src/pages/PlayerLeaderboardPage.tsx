@@ -19,36 +19,45 @@ import {
 import { argbToRgba, parseClubName } from "@/utils/colorUtils";
 import { formatTrophies } from "@/utils/formatTrophies";
 import usePlayerLeaderboard from "@/hooks/usePlayerLeaderboard";
-
-const countries = createListCollection({
-  items: [
-    { label: "Global", value: "global" },
-    { label: "United States", value: "us" },
-    { label: "Germany", value: "de" },
-    { label: "Kazakhstan", value: "kz" },
-  ],
-});
+import useCountries from "@/hooks/useCountries";
 
 const PlayerLeaderboardPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const country = searchParams.get("country") || "global";
 
-  const { leaderboard, loading, error } = usePlayerLeaderboard(country);
+  const {
+    leaderboard,
+    loading: leaderboardLoading,
+    error,
+  } = usePlayerLeaderboard(country);
+  const {
+    countries,
+    loading: countriesLoading,
+    error: countriesError,
+  } = useCountries();
 
   const handleCountryChange = (details: { value: string[] }) => {
     if (details.value.length > 0) {
       setSearchParams({ country: details.value[0] });
+    } else {
+      setSearchParams({ country: "global" });
     }
   };
 
-  if (loading) {
+  const countryCollection = createListCollection({
+    items: countries.map(({ label, value }) => ({ label, value })),
+  });
+
+  const selectedCountry = countries.find((c) => c.value === country);
+
+  if (countriesLoading || leaderboardLoading) {
     return <Spinner size="xl" mt="8" />;
   }
 
-  if (error) {
+  if (countriesError || error) {
     return (
       <Box color="red.500" mt="8">
-        {error}
+        {countriesError || error}
       </Box>
     );
   }
@@ -61,20 +70,43 @@ const PlayerLeaderboardPage = () => {
 
       <Box mb={3} display="flex" justifyContent="center">
         <SelectRoot
-          collection={countries}
-          defaultValue={["global"]}
+          collection={countryCollection}
+          value={[country]}
           onValueChange={handleCountryChange}
           mb={4}
           size="md"
-          width={{ base: "100%", sm: "200px" }}
+          width={{ base: "100%", sm: "250px" }}
         >
-          <SelectTrigger clearable>
-            <SelectValueText placeholder="Select country" />
+          <SelectTrigger>
+            <Stack direction="row" align="center" flex="1">
+              {selectedCountry?.flag && (
+                <Image
+                  src={selectedCountry.flag}
+                  alt={selectedCountry.label}
+                  width="24px"
+                  height="18px"
+                />
+              )}
+              <SelectValueText placeholder="Select location" />
+            </Stack>
           </SelectTrigger>
           <SelectContent>
-            {countries.items.map((country) => (
-              <SelectItem item={country} key={country.value}>
-                {country.label}
+            {countries.map((country) => (
+              <SelectItem
+                item={{ label: country.label, value: country.value }}
+                key={country.value}
+              >
+                <Stack direction="row" align="center" gap={2}>
+                  {country.flag && (
+                    <Image
+                      src={country.flag}
+                      alt={country.label}
+                      width="24px"
+                      height="18px"
+                    />
+                  )}
+                  <Text>{country.label}</Text>
+                </Stack>
               </SelectItem>
             ))}
           </SelectContent>
@@ -96,7 +128,6 @@ const PlayerLeaderboardPage = () => {
               <Table.Cell>{player.rank}</Table.Cell>
               <Table.Cell>
                 <Stack direction="row" align="center" gap={3}>
-                  <Image src={player.icon.id} boxSize="24px" />
                   <Text color={argbToRgba(player.nameColor)}>
                     {player.name}
                   </Text>
