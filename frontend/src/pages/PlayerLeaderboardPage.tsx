@@ -8,6 +8,7 @@ import {
   Text,
   createListCollection,
   Stack,
+  Link,
 } from "@chakra-ui/react";
 import {
   SelectRoot,
@@ -32,6 +33,7 @@ const PlayerLeaderboardPage = () => {
     loading: leaderboardLoading,
     error,
   } = usePlayerLeaderboard(country);
+
   const {
     countries,
     loading: countriesLoading,
@@ -146,11 +148,17 @@ const PlayerLeaderboardPage = () => {
               <Table.Row key={index}>
                 <Table.Cell textAlign="start">{player.rank}</Table.Cell>
                 <Table.Cell>
-                  <Stack direction="row" align="center" gap={3}>
-                    <Text color={argbToRgba(player.nameColor)}>
-                      {player.name}
-                    </Text>
-                  </Stack>
+                  <Link
+                    href={`/player/${player.tag.replace("#", "")}`}
+                    color={argbToRgba(player.nameColor)}
+                    _hover={{
+                      opacity: 0.8,
+                      transform: "scale(1.1)",
+                      transition: "all 0.3s ease-in-out",
+                    }}
+                  >
+                    {player.name}
+                  </Link>
                 </Table.Cell>
                 <Table.Cell>
                   {player.club ? (
