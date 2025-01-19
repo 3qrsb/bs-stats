@@ -23,7 +23,9 @@ import useCountries from "@/hooks/useCountries";
 
 const PlayerLeaderboardPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const country = searchParams.get("country") || "global";
+  const countryParam = searchParams.get("country");
+  const country =
+    countryParam && countryParam !== "global" ? countryParam : "global";
 
   const {
     leaderboard,
@@ -39,8 +41,6 @@ const PlayerLeaderboardPage = () => {
   const handleCountryChange = (details: { value: string[] }) => {
     if (details.value.length > 0) {
       setSearchParams({ country: details.value[0] });
-    } else {
-      setSearchParams({ country: "global" });
     }
   };
 
@@ -51,19 +51,24 @@ const PlayerLeaderboardPage = () => {
   const selectedCountry = countries.find((c) => c.value === country);
 
   if (countriesLoading || leaderboardLoading) {
-    return <Spinner size="xl" mt="8" />;
+    return (
+      <Box textAlign="center" mt="8">
+        <Spinner size="xl" />
+      </Box>
+    );
   }
 
   if (countriesError || error) {
+    const errorMessage = countriesError || error;
     return (
       <Box color="red.500" mt="8">
-        {countriesError || error}
+        {errorMessage}
       </Box>
     );
   }
 
   return (
-    <Box p={{ base: 4, md: 8 }} maxW="1200px" mx="auto">
+    <Box p={{ base: 2, md: 8 }} maxW={{ base: "100%", md: "1100px" }} mx="auto">
       <Heading mb={6} fontSize={{ base: "2xl", md: "3xl" }} textAlign="center">
         Player Leaderboard
       </Heading>
@@ -83,8 +88,8 @@ const PlayerLeaderboardPage = () => {
                 <Image
                   src={selectedCountry.flag}
                   alt={selectedCountry.label}
-                  width="24px"
-                  height="18px"
+                  width="16px"
+                  height="12px"
                 />
               )}
               <SelectValueText placeholder="Select location" />
@@ -101,8 +106,8 @@ const PlayerLeaderboardPage = () => {
                     <Image
                       src={country.flag}
                       alt={country.label}
-                      width="24px"
-                      height="18px"
+                      width="16px"
+                      height="12px"
                     />
                   )}
                   <Text>{country.label}</Text>
@@ -113,41 +118,57 @@ const PlayerLeaderboardPage = () => {
         </SelectRoot>
       </Box>
 
-      <Table.Root mb={3}>
-        <Table.Header>
-          <Table.Row>
-            <Table.ColumnHeader>Rank</Table.ColumnHeader>
-            <Table.ColumnHeader>Player</Table.ColumnHeader>
-            <Table.ColumnHeader>Club</Table.ColumnHeader>
-            <Table.ColumnHeader>Trophies</Table.ColumnHeader>
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          {leaderboard.map((player, index) => (
-            <Table.Row key={index}>
-              <Table.Cell>{player.rank}</Table.Cell>
-              <Table.Cell>
-                <Stack direction="row" align="center" gap={3}>
-                  <Text color={argbToRgba(player.nameColor)}>
-                    {player.name}
-                  </Text>
-                </Stack>
-              </Table.Cell>
-              <Table.Cell>
-                {player.club ? (
-                  (() => {
-                    const { name, color } = parseClubName(player.club.name);
-                    return <Text color={color}>{name}</Text>;
-                  })()
-                ) : (
-                  <Text>-</Text>
-                )}
-              </Table.Cell>
-              <Table.Cell>{formatTrophies(player.trophies)}</Table.Cell>
+      <Table.ScrollArea
+        borderWidth="1px"
+        rounded="md"
+        maxW="100%"
+        overflowX="auto"
+      >
+        <Table.Root mb={3} size="lg" interactive colorPalette="orange">
+          <Table.Header>
+            <Table.Row>
+              <Table.ColumnHeader minW="50px" scope="col" textAlign="start">
+                Rank
+              </Table.ColumnHeader>
+              <Table.ColumnHeader minW="250px" scope="col">
+                Player
+              </Table.ColumnHeader>
+              <Table.ColumnHeader minW="250px" scope="col">
+                Club
+              </Table.ColumnHeader>
+              <Table.ColumnHeader minW="100px" scope="col" textAlign="end">
+                Trophies
+              </Table.ColumnHeader>
             </Table.Row>
-          ))}
-        </Table.Body>
-      </Table.Root>
+          </Table.Header>
+          <Table.Body>
+            {leaderboard.map((player, index) => (
+              <Table.Row key={index}>
+                <Table.Cell textAlign="start">{player.rank}</Table.Cell>
+                <Table.Cell>
+                  <Stack direction="row" align="center" gap={3}>
+                    <Text color={argbToRgba(player.nameColor)}>
+                      {player.name}
+                    </Text>
+                  </Stack>
+                </Table.Cell>
+                <Table.Cell>
+                  {player.club ? (
+                    <Text color={parseClubName(player.club.name).color}>
+                      {parseClubName(player.club.name).name}
+                    </Text>
+                  ) : (
+                    <Text>-</Text>
+                  )}
+                </Table.Cell>
+                <Table.Cell textAlign="end">
+                  {formatTrophies(player.trophies)}
+                </Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table.Root>
+      </Table.ScrollArea>
     </Box>
   );
 };

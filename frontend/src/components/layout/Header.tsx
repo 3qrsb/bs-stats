@@ -36,6 +36,10 @@ const Header = () => {
       p={6}
       align="center"
       justify="space-between"
+      position="sticky"
+      top="0"
+      zIndex="1000"
+      width="100%"
     >
       <Heading>
         <Link href="/" color="white">
