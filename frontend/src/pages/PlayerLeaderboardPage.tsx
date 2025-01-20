@@ -147,7 +147,17 @@ const PlayerLeaderboardPage = () => {
             {leaderboard.map((player, index) => (
               <Table.Row key={index}>
                 <Table.Cell textAlign="start">{player.rank}</Table.Cell>
-                <Table.Cell>
+                <Table.Cell display="flex" alignItems="center">
+                  {player.icon.url ? (
+                    <Image
+                      src={player.icon.url}
+                      alt={`${player.name}'s icon`}
+                      boxSize="35px"
+                      mr={2}
+                    />
+                  ) : (
+                    <Text>No Icon</Text>
+                  )}
                   <Link
                     href={`/player/${player.tag.replace("#", "")}`}
                     color={argbToRgba(player.nameColor)}
