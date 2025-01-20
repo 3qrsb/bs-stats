@@ -1,11 +1,18 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { PlayerRanking } from "@/types/PlayerInfo";
+import { PlayerRanking } from "@/types/playerInfo";
+import useBrawlIcons from "@/hooks/useBrawlIcons";
 
-const useLeaderboard = (country: string) => {
+const usePlayerLeaderboard = (country: string) => {
   const [leaderboard, setLeaderboard] = useState<PlayerRanking[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  const {
+    playerIcons,
+    loading: iconsLoading,
+    error: iconsError,
+  } = useBrawlIcons();
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
@@ -16,7 +23,18 @@ const useLeaderboard = (country: string) => {
         const response = await axios.get<{ items: PlayerRanking[] }>(
           `http://localhost:3000/leaderboard/players?country=${country}`
         );
-        setLeaderboard(response.data.items);
+
+        const players = response.data.items;
+
+        const enrichedPlayers = players.map((player) => ({
+          ...player,
+          icon: {
+            ...player.icon,
+            url: playerIcons[player.icon.id] || undefined,
+          },
+        }));
+
+        setLeaderboard(enrichedPlayers);
       } catch (err) {
         setError(`Failed to fetch leaderboard: ${err}`);
       } finally {
@@ -24,10 +42,16 @@ const useLeaderboard = (country: string) => {
       }
     };
 
-    fetchLeaderboard();
-  }, [country]);
+    if (!iconsLoading) {
+      fetchLeaderboard();
+    }
+  }, [country, playerIcons, iconsLoading]);
 
-  return { leaderboard, loading, error };
+  return {
+    leaderboard,
+    loading: loading || iconsLoading,
+    error: error || iconsError,
+  };
 };
 
-export default useLeaderboard;
+export default usePlayerLeaderboard;

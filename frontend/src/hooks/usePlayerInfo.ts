@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { PlayerInfo } from "@/types/PlayerInfo";
+import { PlayerInfo } from "@/types/playerInfo";
 
 const usePlayerInfo = (tags: string[]) => {
   const [playerInfos, setPlayerInfos] = useState<
