@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { PlayerInfo } from "@/types/playerInfo";
+import { Player } from "@/types/playerInfo";
 
 const usePlayerInfo = (tags: string[]) => {
   const [playerInfos, setPlayerInfos] = useState<
-    Record<string, PlayerInfo | null>
+    Record<string, Player | null>
   >({});
   const [loading, setLoading] = useState<Record<string, boolean>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -15,7 +15,7 @@ const usePlayerInfo = (tags: string[]) => {
       setErrors((prev) => ({ ...prev, [tag]: "" }));
 
       try {
-        const response = await axios.get<PlayerInfo>(
+        const response = await axios.get<Player>(
           `http://localhost:3000/brawl-stars/players/${tag}`
         );
         setPlayerInfos((prev) => ({ ...prev, [tag]: response.data }));

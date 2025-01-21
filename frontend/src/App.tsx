@@ -3,6 +3,7 @@ import HomePage from "./pages/HomePage";
 import PlayerInfoPage from "./pages/PlayerInfoPage";
 import Layout from "./components/layout/Layout";
 import PlayerLeaderboardPage from "./pages/PlayerLeaderboardPage";
+import ClubLeaderboardPage from "./pages/ClubLeaderboard";
 
 const App = () => {
   return (
@@ -29,6 +30,14 @@ const App = () => {
           element={
             <Layout>
               <PlayerLeaderboardPage />{" "}
+            </Layout>
+          }
+        />
+        <Route
+          path="/leaderboard/clubs"
+          element={
+            <Layout>
+              <ClubLeaderboardPage />{" "}
             </Layout>
           }
         />

@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { BrawlAPIPlayerIcon } from "@/types/playerInfo";
+import { BrawlAPIIcon } from "@/types/playerInfo";
 
 interface BrawlAPIIconsResponse {
-  player: Record<string, BrawlAPIPlayerIcon>;
+  player: Record<string, BrawlAPIIcon>;
   club: Record<string, { id: number; imageUrl: string }>;
 }
 

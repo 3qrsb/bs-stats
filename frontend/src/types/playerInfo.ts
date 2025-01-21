@@ -1,18 +1,11 @@
-export interface PlayerIcon {
-  id: number;
-  url?: string;
-}
-
-export interface PlayerClub {
-  tag: string;
-  name: string;
-}
-
-export interface PlayerInfo {
+export interface Player {
   tag: string;
   name: string;
   nameColor: string;
-  icon: PlayerIcon;
+  icon: {
+    id: number;
+    url?: string;
+  };
   trophies: number;
   highestTrophies: number;
   expLevel: number;
@@ -23,14 +16,19 @@ export interface PlayerInfo {
   duoVictories: number;
   bestRoboRumbleTime: number;
   bestTimeAsBigBrawler: number;
-  club?: PlayerClub;
+  club?: {
+    tag: string;
+    name: string;
+    badgeId?: number;
+    badgeUrl?: string;
+  };
 }
 
-export interface PlayerRanking extends PlayerInfo {
+export interface PlayerRanking extends Player {
   rank: number;
 }
 
-export interface BrawlAPIPlayerIcon {
+export interface BrawlAPIIcon {
   id: number;
   name: string;
   name2: string;
