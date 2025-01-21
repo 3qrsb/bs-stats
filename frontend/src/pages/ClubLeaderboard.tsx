@@ -9,6 +9,7 @@ import {
   createListCollection,
   Stack,
   VStack,
+  Link,
 } from "@chakra-ui/react";
 import {
   SelectRoot,
@@ -127,7 +128,7 @@ const ClubLeaderboardPage = () => {
         maxW="100%"
         overflowX="auto"
       >
-        <Table.Root mb={3} size="lg" interactive colorPalette="yellow">
+        <Table.Root mb={3} size="lg" interactive colorPalette="accent">
           <Table.Header>
             <Table.Row>
               <Table.ColumnHeader minW="50px" scope="col" textAlign="start">
@@ -162,9 +163,17 @@ const ClubLeaderboardPage = () => {
                     <Text>No Badge</Text>
                   )}
                   <VStack align="start">
-                    <Text color={parseClubName(club.name).color}>
+                    <Link
+                      href={`/club/${club.tag.replace("#", "")}`}
+                      color={parseClubName(club.name).color}
+                      _hover={{
+                        opacity: 0.8,
+                        transform: "scale(1.1)",
+                        transition: "all 0.3s ease-in-out",
+                      }}
+                    >
                       {parseClubName(club.name).name}
-                    </Text>
+                    </Link>
                     <Toaster />
                     <Tag
                       size="sm"
