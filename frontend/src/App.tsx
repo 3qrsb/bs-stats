@@ -4,6 +4,7 @@ import PlayerInfoPage from "./pages/PlayerInfoPage";
 import Layout from "./components/layout/Layout";
 import PlayerLeaderboardPage from "./pages/PlayerLeaderboardPage";
 import ClubLeaderboardPage from "./pages/ClubLeaderboard";
+import ClubDetailsPage from "./pages/details/ClubDetailsPage";
 
 const App = () => {
   return (
@@ -22,6 +23,14 @@ const App = () => {
           element={
             <Layout>
               <PlayerInfoPage />{" "}
+            </Layout>
+          }
+        />
+        <Route
+          path="/club/:clubTag"
+          element={
+            <Layout>
+              <ClubDetailsPage />{" "}
             </Layout>
           }
         />

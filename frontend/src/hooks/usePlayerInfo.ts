@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { Player } from "@/types/playerInfo";
 
 const usePlayerInfo = (tags: string[]) => {
-  const [playerInfos, setPlayerInfos] = useState<
-    Record<string, Player | null>
-  >({});
+  const [playerInfos, setPlayerInfos] = useState<Record<string, Player | null>>(
+    {}
+  );
   const [loading, setLoading] = useState<Record<string, boolean>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -20,9 +20,12 @@ const usePlayerInfo = (tags: string[]) => {
         );
         setPlayerInfos((prev) => ({ ...prev, [tag]: response.data }));
       } catch (err) {
+        const error = err as AxiosError<{ message?: string }>;
         setErrors((prev) => ({
           ...prev,
-          [tag]: `Failed to fetch player information: ${err}`,
+          [tag]: `Failed to fetch player information: ${
+            error.response?.data?.message || error.message || "Unknown error"
+          }`,
         }));
       } finally {
         setLoading((prev) => ({ ...prev, [tag]: false }));
