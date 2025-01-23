@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import configuration from './config/configuration';
 import { BrawlStarsModule } from './brawl-stars/brawl-stars.module';
 import { LeaderboardModule } from './leaderboard/leaderboard.module';
+import { ClubModule } from './club/club.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { LeaderboardModule } from './leaderboard/leaderboard.module';
     }),
     BrawlStarsModule,
     LeaderboardModule,
+    ClubModule,
   ],
 })
 export class AppModule {}
