@@ -9,6 +9,7 @@ import {
   createListCollection,
   Stack,
   Link,
+  VStack,
 } from "@chakra-ui/react";
 import {
   SelectRoot,
@@ -21,6 +22,8 @@ import { argbToRgba, parseClubName } from "@/utils/colorUtils";
 import { formatTrophies } from "@/utils/formatTrophies";
 import usePlayerLeaderboard from "@/hooks/usePlayerLeaderboard";
 import useCountries from "@/hooks/useCountries";
+import { Tag } from "@/components/ui/tag";
+import { toaster, Toaster } from "@/components/ui/toaster";
 
 const PlayerLeaderboardPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -126,7 +129,7 @@ const PlayerLeaderboardPage = () => {
         maxW="100%"
         overflowX="auto"
       >
-        <Table.Root mb={3} size="lg" interactive colorPalette="orange">
+        <Table.Root mb={3} size="lg" interactive colorPalette="accent">
           <Table.Header>
             <Table.Row>
               <Table.ColumnHeader minW="50px" scope="col" textAlign="start">
@@ -158,23 +161,44 @@ const PlayerLeaderboardPage = () => {
                   ) : (
                     <Text>No Icon</Text>
                   )}
-                  <Link
-                    href={`/player/${player.tag.replace("#", "")}`}
-                    color={argbToRgba(player.nameColor)}
-                    _hover={{
-                      opacity: 0.8,
-                      transform: "scale(1.1)",
-                      transition: "all 0.3s ease-in-out",
-                    }}
-                  >
-                    {player.name}
-                  </Link>
+                  <VStack align="start">
+                    <Link
+                      href={`/player/${player.tag.replace("#", "")}`}
+                      color={argbToRgba(player.nameColor)}
+                      _hover={{
+                        opacity: 0.8,
+                        transform: "scale(1.1)",
+                        transition: "all 0.3s ease-in-out",
+                      }}
+                    >
+                      {player.name}
+                    </Link>
+                    <Toaster />
+                    <Tag
+                      size="sm"
+                      variant="outline"
+                      colorPalette="orange"
+                      cursor="pointer"
+                      mr={2}
+                      onClick={() => {
+                        navigator.clipboard.writeText(player.tag);
+                        toaster.create({
+                          title: "Club tag copied!",
+                          type: "success",
+                          duration: 2000,
+                        });
+                      }}
+                    >
+                      {player.tag}
+                    </Tag>
+                  </VStack>
                 </Table.Cell>
                 <Table.Cell>
                   {player.club ? (
                     <Text color={parseClubName(player.club.name).color}>
                       {parseClubName(player.club.name).name}
                     </Text>
+                    
                   ) : (
                     <Text>-</Text>
                   )}
