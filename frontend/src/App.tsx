@@ -1,10 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage";
-import PlayerInfoPage from "./pages/PlayerInfoPage";
 import Layout from "./components/layout/Layout";
-import PlayerLeaderboardPage from "./pages/PlayerLeaderboardPage";
-import ClubLeaderboardPage from "./pages/ClubLeaderboard";
+import PlayerLeaderboardPage from "./pages/leaderboard/PlayerLeaderboardPage";
+import ClubLeaderboardPage from "./pages/leaderboard/ClubLeaderboard";
 import ClubDetailsPage from "./pages/details/ClubDetailsPage";
+import PlayerDetailsPage from "./pages/details/PlayerDetailsPage";
 
 const App = () => {
   return (
@@ -22,7 +22,7 @@ const App = () => {
           path="/player/:tag"
           element={
             <Layout>
-              <PlayerInfoPage />{" "}
+              <PlayerDetailsPage />{" "}
             </Layout>
           }
         />

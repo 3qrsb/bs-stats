@@ -21,7 +21,7 @@ import { argbToRgba } from "@/utils/colorUtils";
 import usePlayerInfo from "@/hooks/usePlayerInfo";
 import useBrawlIcons from "@/hooks/useBrawlIcons";
 
-const PlayerInfoPage = () => {
+const PlayerDetailsPage = () => {
   const { tag } = useParams();
   const { playerInfos, loading, errors } = usePlayerInfo(tag ? [tag] : []);
   const { playerIcons } = useBrawlIcons();
@@ -224,4 +224,4 @@ const PlayerInfoPage = () => {
   );
 };
 
-export default PlayerInfoPage;
+export default PlayerDetailsPage;
