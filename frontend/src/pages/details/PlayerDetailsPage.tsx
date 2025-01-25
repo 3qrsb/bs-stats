@@ -15,19 +15,24 @@ import {
   StatValueText,
   StatHelpText,
   StatUpIndicator,
-  StatDownIndicator,
 } from "@chakra-ui/react";
 import { argbToRgba } from "@/utils/colorUtils";
 import usePlayerInfo from "@/hooks/usePlayerInfo";
+import useClubInfo from "@/hooks/useClubInfo";
 import useBrawlIcons from "@/hooks/useBrawlIcons";
 
 const PlayerDetailsPage = () => {
   const { tag } = useParams();
   const { playerInfos, loading, errors } = usePlayerInfo(tag ? [tag] : []);
-  const { playerIcons } = useBrawlIcons();
+  const { playerIcons, clubIcons } = useBrawlIcons();
+
   const playerInfo = playerInfos[tag!];
   const isLoading = loading[tag!];
   const error = errors[tag!];
+
+  const clubTag = playerInfo?.club?.tag?.replace("#", "") || "";
+  const { clubInfos } = useClubInfo(clubTag ? [clubTag] : []);
+  const club = clubInfos[clubTag];
 
   if (isLoading) {
     return (
@@ -58,10 +63,8 @@ const PlayerDetailsPage = () => {
     nameColor,
     trophies,
     highestTrophies,
-    club,
     expLevel,
     expPoints,
-    isQualifiedFromChampionshipChallenge,
     "3vs3Victories": threeVsThreeVictories,
     soloVictories,
     duoVictories,
@@ -70,8 +73,7 @@ const PlayerDetailsPage = () => {
 
   return (
     <Flex direction="column" align="center" py={8} px={{ base: 4, md: 8 }}>
-
-      <Box textAlign="center" mb={8}>
+      <Box textAlign="start" mb={8}>
         <Flex align="center" justify="center" gap={4}>
           {playerIcons[icon.id] && (
             <Image
@@ -97,16 +99,34 @@ const PlayerDetailsPage = () => {
 
         {club && (
           <Flex align="center" justify="center" mt={4} gap={2}>
-            <Text fontSize="lg" fontWeight="medium" color="gray.700">
-              {club.name}
-            </Text>
+            {clubIcons[club.badgeId] && (
+              <Image
+                src={clubIcons[club.badgeId]}
+                alt={`${club.name} Badge`}
+                boxSize="50px"
+              />
+            )}
+            <VStack align="start" gap={1}>
+              <Text fontSize="lg" fontWeight="medium" color="gray.700">
+                {club.name}
+              </Text>
+              <Badge
+                colorScheme="orange"
+                fontSize="md"
+                px={4}
+                py={1}
+                cursor="pointer"
+                onClick={() => navigator.clipboard.writeText(club.tag)}
+              >
+                {club.tag}
+              </Badge>
+            </VStack>
           </Flex>
         )}
       </Box>
 
       <Box w="100%" maxW="900px">
         <VStack align="stretch" gap={8}>
-
           <Flex justify="space-between" gap={6} flexWrap="wrap">
             <Card.Root flex="1" minW="200px">
               <Card.Body>
@@ -149,10 +169,8 @@ const PlayerDetailsPage = () => {
             <Card.Root flex="1" minW="200px">
               <Card.Body>
                 <StatRoot>
-                  <StatLabel fontWeight="bold" fontSize="lg">
-                    3v3 Victories
-                  </StatLabel>
-                  <StatValueText fontSize="2xl" color="blue.500">
+                  <StatLabel>3v3 Victories</StatLabel>
+                  <StatValueText color="blue.500" fontSize="2xl">
                     {threeVsThreeVictories.toLocaleString()}
                   </StatValueText>
                 </StatRoot>
@@ -162,10 +180,8 @@ const PlayerDetailsPage = () => {
             <Card.Root flex="1" minW="200px">
               <Card.Body>
                 <StatRoot>
-                  <StatLabel fontWeight="bold" fontSize="lg">
-                    Solo Victories
-                  </StatLabel>
-                  <StatValueText fontSize="2xl" color="green.500">
+                  <StatLabel>Solo Victories</StatLabel>
+                  <StatValueText color="green.500" fontSize="2xl">
                     {soloVictories.toLocaleString()}
                   </StatValueText>
                 </StatRoot>
@@ -175,45 +191,10 @@ const PlayerDetailsPage = () => {
             <Card.Root flex="1" minW="200px">
               <Card.Body>
                 <StatRoot>
-                  <StatLabel fontWeight="bold" fontSize="lg">
-                    Duo Victories
-                  </StatLabel>
-                  <StatValueText fontSize="2xl" color="red.500">
+                  <StatLabel>Duo Victories</StatLabel>
+                  <StatValueText color="red.500" fontSize="2xl">
                     {duoVictories.toLocaleString()}
                   </StatValueText>
-                </StatRoot>
-              </Card.Body>
-            </Card.Root>
-          </Flex>
-
-          <Separator borderColor="gray.400" />
-
-          <Flex align="center" justify="center" py={4}>
-            <Card.Root textAlign="center">
-              <Card.Body>
-                <StatRoot>
-                  <StatLabel fontWeight="bold" fontSize="lg">
-                    Championship Challenge
-                  </StatLabel>
-                  <StatHelpText>
-                    {isQualifiedFromChampionshipChallenge ? (
-                      <StatUpIndicator />
-                    ) : (
-                      <StatDownIndicator />
-                    )}
-                    <Badge
-                      colorScheme={
-                        isQualifiedFromChampionshipChallenge ? "green" : "red"
-                      }
-                      fontSize="xl"
-                      px={6}
-                      py={2}
-                    >
-                      {isQualifiedFromChampionshipChallenge
-                        ? "Qualified"
-                        : "Not Qualified"}
-                    </Badge>
-                  </StatHelpText>
                 </StatRoot>
               </Card.Body>
             </Card.Root>
