@@ -4,6 +4,7 @@ import configuration from './config/configuration';
 import { BrawlStarsModule } from './brawl-stars/brawl-stars.module';
 import { LeaderboardModule } from './leaderboard/leaderboard.module';
 import { ClubModule } from './club/club.module';
+import { BattleLogModule } from './battlelog/battlelog.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { ClubModule } from './club/club.module';
     BrawlStarsModule,
     LeaderboardModule,
     ClubModule,
+    BattleLogModule,
   ],
 })
 export class AppModule {}
