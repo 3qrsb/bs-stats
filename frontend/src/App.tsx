@@ -2,9 +2,10 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import Layout from "./components/layout/Layout";
 import PlayerLeaderboardPage from "./pages/leaderboard/PlayerLeaderboardPage";
-import ClubLeaderboardPage from "./pages/leaderboard/ClubLeaderboard";
+import ClubLeaderboardPage from "./pages/leaderboard/ClubLeaderboardPage";
 import ClubDetailsPage from "./pages/details/ClubDetailsPage";
 import PlayerDetailsPage from "./pages/details/PlayerDetailsPage";
+import BattleLogPage from "./pages/details/BattleLogPage";
 
 const App = () => {
   return (
@@ -23,6 +24,14 @@ const App = () => {
           element={
             <Layout>
               <PlayerDetailsPage />{" "}
+            </Layout>
+          }
+        />
+        <Route
+          path="/player/:tag/battlelog"
+          element={
+            <Layout>
+              <BattleLogPage />
             </Layout>
           }
         />

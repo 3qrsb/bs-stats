@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { ClubRanking } from "@/types/clubInfo";
-import useClubIcons from "./BrawlApiIcons/useClubIcons";
+import useClubIcons from "../BrawlApiIcons/useClubIcons";
 
 const useClubLeaderboard = (country: string) => {
   const [leaderboard, setLeaderboard] = useState<ClubRanking[]>([]);

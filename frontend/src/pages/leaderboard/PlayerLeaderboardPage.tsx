@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/select";
 import { argbToRgba, parseClubName } from "@/utils/colorUtils";
 import { formatTrophies } from "@/utils/formatTrophies";
-import usePlayerLeaderboard from "@/hooks/usePlayerLeaderboard";
+import usePlayerLeaderboard from "@/hooks/leaderboard/usePlayerLeaderboard";
 import useCountries from "@/hooks/useCountries";
 import { Tag } from "@/components/ui/tag";
 import { toaster, Toaster } from "@/components/ui/toaster";
@@ -198,7 +198,6 @@ const PlayerLeaderboardPage = () => {
                     <Text color={parseClubName(player.club.name).color}>
                       {parseClubName(player.club.name).name}
                     </Text>
-                    
                   ) : (
                     <Text>-</Text>
                   )}

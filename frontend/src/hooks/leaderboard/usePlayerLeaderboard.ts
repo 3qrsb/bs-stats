@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { PlayerRanking } from "@/types/playerInfo";
-import usePlayerIcons from "./BrawlApiIcons/usePlayerIcons";
+import usePlayerIcons from "../BrawlApiIcons/usePlayerIcons";
 
 const usePlayerLeaderboard = (country: string) => {
   const [leaderboard, setLeaderboard] = useState<PlayerRanking[]>([]);

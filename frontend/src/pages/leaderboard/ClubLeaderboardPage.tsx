@@ -21,7 +21,7 @@ import {
 import { Tag } from "@/components/ui/tag";
 import { Toaster, toaster } from "@/components/ui/toaster";
 import { parseClubName } from "@/utils/colorUtils";
-import useClubLeaderboard from "@/hooks/useClubLeaderboard";
+import useClubLeaderboard from "@/hooks/leaderboard/useClubLeaderboard";
 import useCountries from "@/hooks/useCountries";
 
 const ClubLeaderboardPage = () => {
