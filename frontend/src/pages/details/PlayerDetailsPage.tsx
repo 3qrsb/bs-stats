@@ -20,12 +20,14 @@ import { toaster, Toaster } from "@/components/ui/toaster";
 import { argbToRgba, parseClubName } from "@/utils/colorUtils";
 import usePlayerInfo from "@/hooks/usePlayerInfo";
 import useClubInfo from "@/hooks/useClubInfo";
-import useBrawlIcons from "@/hooks/useBrawlIcons";
+import usePlayerIcons from "@/hooks/BrawlApiIcons/usePlayerIcons";
+import useClubIcons from "@/hooks/BrawlApiIcons/useClubIcons";
 
 const PlayerDetailsPage = () => {
   const { tag } = useParams();
   const { playerInfos, loading, errors } = usePlayerInfo(tag ? [tag] : []);
-  const { playerIcons, clubIcons } = useBrawlIcons();
+  const { playerIcons } = usePlayerIcons();
+  const { clubIcons } = useClubIcons();
 
   const playerInfo = playerInfos[tag!];
   const isLoading = loading[tag!];
@@ -146,6 +148,21 @@ const PlayerDetailsPage = () => {
               </VStack>
             </Flex>
           )}
+        </Flex>
+
+        <Flex justify="center" mt={4}>
+          <Link
+            href={`/player/${tag}/battlelog`}
+            colorPalette="orange"
+            fontSize="large"
+            _hover={{
+              opacity: 0.9,
+              transform: "scale(1.05)",
+              transition: "all 0.3s ease-in-out",
+            }}
+          >
+            View Battle Log
+          </Link>
         </Flex>
       </Box>
 

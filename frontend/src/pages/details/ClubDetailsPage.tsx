@@ -10,24 +10,29 @@ import {
   Link,
 } from "@chakra-ui/react";
 import useClubInfo from "@/hooks/useClubInfo";
-import useBrawlIcons from "@/hooks/useBrawlIcons";
 import { argbToRgba, parseClubName } from "@/utils/colorUtils";
 import { formatRoleName } from "@/utils/stringUtils";
 import { Tag } from "@/components/ui/tag";
 import { toaster, Toaster } from "@/components/ui/toaster";
 import { DataListItem, DataListRoot } from "@/components/ui/data-list";
+import usePlayerIcons from "@/hooks/BrawlApiIcons/usePlayerIcons";
+import useClubIcons from "@/hooks/BrawlApiIcons/useClubIcons";
 
 const ClubDetailsPage = () => {
   const { clubTag } = useParams<{ clubTag: string }>();
   const { clubInfos, loading, errors } = useClubInfo([clubTag || ""]);
   const {
     playerIcons,
+    loading: playerIconsLoading,
+    error: playerIconsError,
+  } = usePlayerIcons();
+  const {
     clubIcons,
-    loading: iconsLoading,
-    error: iconsError,
-  } = useBrawlIcons();
+    loading: clubIconsLoading,
+    error: clubIconsError,
+  } = useClubIcons();
 
-  if (loading[clubTag || ""] || iconsLoading) {
+  if (loading[clubTag || ""] || playerIconsLoading || clubIconsLoading) {
     return (
       <Box textAlign="center" mt="8">
         <Spinner size="xl" />
@@ -35,10 +40,10 @@ const ClubDetailsPage = () => {
     );
   }
 
-  if (errors[clubTag || ""] || iconsError) {
+  if (errors[clubTag || ""] || playerIconsError || clubIconsError) {
     return (
       <Box color="red.500" mt="8" textAlign="center">
-        {errors[clubTag || ""] || iconsError}
+        {errors[clubTag || ""] || playerIconsError || clubIconsError}
       </Box>
     );
   }
