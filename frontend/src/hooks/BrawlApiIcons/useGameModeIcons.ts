@@ -8,7 +8,7 @@ interface GameMode {
 }
 
 const useGameModeIcons = () => {
-  const [gameModeIcons, setGameModeIcons] = useState<Record<number, string>>(
+  const [gameModeIcons, setGameModeIcons] = useState<Record<string, string>>(
     {}
   );
   const [loading, setLoading] = useState(true);
@@ -23,7 +23,7 @@ const useGameModeIcons = () => {
         );
 
         const gameModeIconMap = Object.fromEntries(
-          response.data.list.map((mode) => [mode.id, mode.imageUrl])
+          response.data.list.map((mode) => [mode.name, mode.imageUrl])
         );
 
         setGameModeIcons(gameModeIconMap);
