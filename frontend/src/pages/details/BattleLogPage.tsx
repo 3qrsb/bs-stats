@@ -14,13 +14,15 @@ import {
 import useBattleLog from "@/hooks/useBattleLog";
 import { parseISO, formatDistanceToNow } from "date-fns";
 import useBrawlerIcons from "@/hooks/BrawlApiIcons/useBrawlerIcons";
-import useEventIcons from "@/hooks/BrawlApiIcons/useEventIcons";
+import useGameModeIcons from "@/hooks/BrawlApiIcons/useGameModeIcons";
+import useMapIcons from "@/hooks/BrawlApiIcons/useMapIcons";
 
 const BattleLogPage = () => {
   const { tag } = useParams<{ tag: string }>();
   const { battleLog, loading, error } = useBattleLog(tag || "");
   const { brawlerIcons } = useBrawlerIcons();
-  const { eventIcons } = useEventIcons();
+  const { gameModeIcons } = useGameModeIcons();
+  const { mapIcons } = useMapIcons();
 
   if (loading) {
     return (
@@ -71,92 +73,141 @@ const BattleLogPage = () => {
               {battleLog?.length > 0 ? (
                 battleLog.map((battle, index) => (
                   <Table.Row key={index}>
-                    <Table.Cell
-                      display="flex"
-                      flexDirection="column"
-                      alignItems="start"
-                    >
-                      {eventIcons[battle.event.id] ? (
-                        <>
+                    <Table.Cell>
+                      <Flex align="center" gap={4}>
+                        {gameModeIcons[battle.event.mode] ? (
                           <Image
-                            src={eventIcons[battle.event.id]}
+                            src={gameModeIcons[battle.event.mode]}
                             alt={battle.event.mode}
                             boxSize="50px"
-                            mb={2}
                           />
-                          <Text fontWeight="bold">
-                            {eventIcons[battle.event.id]}
-                          </Text>
-                        </>
-                      ) : (
-                        <Text>No Image Available</Text>
-                      )}
-                      <Text color="gray.500">{battle.event.mode}</Text>
-                      <Text fontSize="sm" color="gray.400">
+                        ) : (
+                          <Text>No Game Mode Icon</Text>
+                        )}
+
+                        <Flex direction="column" align="center">
+                          {mapIcons[battle.event.id] ? (
+                            <>
+                              <Box
+                                as="button"
+                                _hover={{
+                                  transform: "scale(1.05)",
+                                  transition: "0.2s",
+                                }}
+                              >
+                                <Image
+                                  src={mapIcons[battle.event.id].imageUrl}
+                                  alt={mapIcons[battle.event.id].name}
+                                  boxSize="50px"
+                                  rounded="md"
+                                  border="1px solid"
+                                  borderColor="gray.300"
+                                />
+                              </Box>
+                              <Text fontWeight="bold" fontSize="sm" mt={2}>
+                                {mapIcons[battle.event.id].name ||
+                                  "Unknown Map"}
+                              </Text>
+                            </>
+                          ) : (
+                            <Text>No Map Available</Text>
+                          )}
+                        </Flex>
+                      </Flex>
+
+                      <Text color="gray.500" fontSize="sm">
+                        {battle.event.mode}
+                      </Text>
+
+                      <Text fontSize="xs" color="gray.400" mt={1}>
                         {formatDistanceToNow(parseISO(battle.battleTime))} ago
                       </Text>
                     </Table.Cell>
 
                     <Table.Cell>
-                      <Badge
-                        boxShadow="md"
-                        colorPalette={
-                          battle.battle.result === "victory"
-                            ? "green"
-                            : battle.battle.result === "defeat"
-                            ? "red"
-                            : "gray"
-                        }
+                      <Flex
+                        direction="column"
+                        align="center"
+                        gap={2}
+                        justify="center"
                       >
-                        {battle.battle.result || "N/A"}
-                      </Badge>
-                      {battle.battle.trophyChange !== undefined ? (
-                        <Text
-                          color={
-                            battle.battle.trophyChange > 0
-                              ? "green.500"
-                              : "red.500"
+                        <Badge
+                          boxShadow="md"
+                          colorPalette={
+                            battle.battle.result === "victory"
+                              ? "green"
+                              : battle.battle.result === "defeat"
+                              ? "red"
+                              : "gray"
                           }
-                          fontSize="sm"
+                          fontSize="md"
+                          px={3}
+                          py={1}
                         >
-                          {battle.battle.trophyChange > 0
-                            ? `+${battle.battle.trophyChange}`
-                            : battle.battle.trophyChange}
-                        </Text>
-                      ) : (
-                        "-"
-                      )}
+                          {battle.battle.result || "N/A"}
+                        </Badge>
+
+                        {battle.battle.trophyChange !== undefined && (
+                          <Text
+                            color={
+                              battle.battle.trophyChange > 0
+                                ? "green.500"
+                                : "red.500"
+                            }
+                            fontSize="sm"
+                            fontWeight="bold"
+                            textAlign="center"
+                          >
+                            {battle.battle.trophyChange > 0
+                              ? `+${battle.battle.trophyChange}`
+                              : battle.battle.trophyChange}
+                          </Text>
+                        )}
+                      </Flex>
                     </Table.Cell>
+
                     <Table.Cell>
-                      <Flex justifyContent="space-between" flexWrap="wrap">
+                      <Flex
+                        justifyContent="space-between"
+                        alignItems="flex-start"
+                        gap={6}
+                      >
                         {battle.battle.teams?.map((team, teamIndex) => (
-                          <VStack key={teamIndex} align="stretch" gap={3}>
+                          <VStack key={teamIndex} align="stretch" flex="1">
                             {team.map((player) => (
                               <Flex
                                 key={player.tag}
                                 align="center"
-                                gap={1}
+                                gap={2}
                                 position="relative"
                                 justify="flex-start"
                               >
-                                {brawlerIcons[player.brawler.id] ? (
-                                  <Image
-                                    src={brawlerIcons[player.brawler.id]}
-                                    alt={player.brawler.name}
-                                    boxSize="35px"
-                                  />
-                                ) : (
-                                  <Text>No Icon</Text>
-                                )}
+                                <Box position="relative">
+                                  {brawlerIcons[player.brawler.id] ? (
+                                    <Image
+                                      src={brawlerIcons[player.brawler.id]}
+                                      alt={player.brawler.name}
+                                      boxSize="35px"
+                                    />
+                                  ) : (
+                                    <Text>No Icon</Text>
+                                  )}
+                                  {battle.battle.starPlayer?.tag ===
+                                    player.tag && (
+                                    <Badge
+                                      colorPalette="yellow"
+                                      boxShadow="md"
+                                      position="absolute"
+                                      top="0"
+                                      left="0"
+                                      transform="translate(-50%, -50%)"
+                                    >
+                                      <FaStar />
+                                    </Badge>
+                                  )}
+                                </Box>
 
                                 <Text fontSize="sm">{player.name}</Text>
-
-                                {battle.battle.starPlayer?.tag ===
-                                  player.tag && (
-                                  <Badge colorPalette="yellow" boxShadow="md">
-                                    <FaStar />
-                                  </Badge>
-                                )}
                               </Flex>
                             ))}
                           </VStack>
