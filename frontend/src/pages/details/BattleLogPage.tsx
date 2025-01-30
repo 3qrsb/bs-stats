@@ -11,19 +11,19 @@ import {
   Badge,
   Flex,
   Portal,
+  Link,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import useBattleLog from "@/hooks/useBattleLog";
 import { parseISO, formatDistanceToNow } from "date-fns";
 import useBrawlerIcons from "@/hooks/BrawlApiIcons/useBrawlerIcons";
-import useGameModeIcons from "@/hooks/BrawlApiIcons/useGameModeIcons";
 import useMapIcons from "@/hooks/BrawlApiIcons/useMapIcons";
+import { formatRoleName } from "@/utils/stringUtils";
 
 const BattleLogPage = () => {
   const { tag } = useParams<{ tag: string }>();
   const { battleLog, loading, error } = useBattleLog(tag || "");
   const { brawlerIcons } = useBrawlerIcons();
-  const { gameModeIcons } = useGameModeIcons();
   const { mapIcons } = useMapIcons();
 
   const [isMapOpen, setIsMapOpen] = useState(false);
@@ -80,7 +80,9 @@ const BattleLogPage = () => {
             <Table.Header>
               <Table.Row>
                 <Table.ColumnHeader minW="150px">Battle</Table.ColumnHeader>
-                <Table.ColumnHeader minW="100px">Result</Table.ColumnHeader>
+                <Table.ColumnHeader textAlign="center" minW="100px">
+                  Result
+                </Table.ColumnHeader>
                 <Table.ColumnHeader minW="350px">Players</Table.ColumnHeader>
               </Table.Row>
             </Table.Header>
@@ -90,16 +92,6 @@ const BattleLogPage = () => {
                   <Table.Row key={index}>
                     <Table.Cell>
                       <Flex align="center" gap={4}>
-                        {gameModeIcons[battle.event.mode] ? (
-                          <Image
-                            src={gameModeIcons[battle.event.mode]}
-                            alt={battle.event.mode}
-                            boxSize="50px"
-                          />
-                        ) : (
-                          <Text>No Game Mode Icon</Text>
-                        )}
-
                         <Flex direction="column" align="center">
                           {mapIcons[battle.event.id] ? (
                             <>
@@ -118,8 +110,6 @@ const BattleLogPage = () => {
                                   alt={mapIcons[battle.event.id].name}
                                   boxSize="50px"
                                   rounded="md"
-                                  border="1px solid"
-                                  borderColor="gray.300"
                                 />
                               </Box>
                               <Text fontWeight="bold" fontSize="sm" mt={2}>
@@ -134,7 +124,7 @@ const BattleLogPage = () => {
                       </Flex>
 
                       <Text color="gray.500" fontSize="sm">
-                        {battle.event.mode}
+                        {formatRoleName(battle.event.mode)}
                       </Text>
 
                       <Text fontSize="xs" color="gray.400" mt={1}>
@@ -225,7 +215,20 @@ const BattleLogPage = () => {
                                   )}
                                 </Box>
 
-                                <Text fontSize="sm">{player.name}</Text>
+                                <Link
+                                  href={`/player/${player.tag.replace(
+                                    "#",
+                                    ""
+                                  )}`}
+                                  fontSize="sm"
+                                  fontWeight="bold"
+                                  _hover={{
+                                    opacity: 0.8,
+                                    transition: "all 0.3s ease-in-out",
+                                  }}
+                                >
+                                  {player.name}
+                                </Link>
                               </Flex>
                             ))}
                           </VStack>
