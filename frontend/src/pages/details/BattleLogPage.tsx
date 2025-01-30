@@ -10,7 +10,9 @@ import {
   Image,
   Badge,
   Flex,
+  Portal,
 } from "@chakra-ui/react";
+import { useState } from "react";
 import useBattleLog from "@/hooks/useBattleLog";
 import { parseISO, formatDistanceToNow } from "date-fns";
 import useBrawlerIcons from "@/hooks/BrawlApiIcons/useBrawlerIcons";
@@ -23,6 +25,19 @@ const BattleLogPage = () => {
   const { brawlerIcons } = useBrawlerIcons();
   const { gameModeIcons } = useGameModeIcons();
   const { mapIcons } = useMapIcons();
+
+  const [isMapOpen, setIsMapOpen] = useState(false);
+  const [selectedMap, setSelectedMap] = useState<string | null>(null);
+
+  const openMap = (mapUrl: string) => {
+    setSelectedMap(mapUrl);
+    setIsMapOpen(true);
+  };
+
+  const closeMap = () => {
+    setIsMapOpen(false);
+    setSelectedMap(null);
+  };
 
   if (loading) {
     return (
@@ -90,6 +105,9 @@ const BattleLogPage = () => {
                             <>
                               <Box
                                 as="button"
+                                onClick={() =>
+                                  openMap(mapIcons[battle.event.id].imageUrl)
+                                }
                                 _hover={{
                                   transform: "scale(1.05)",
                                   transition: "0.2s",
@@ -227,6 +245,34 @@ const BattleLogPage = () => {
           </Table.Root>
         </Table.ScrollArea>
       </VStack>
+
+      {isMapOpen && (
+        <Portal>
+          <Box
+            position="fixed"
+            top="0"
+            left="0"
+            width="100vw"
+            height="100vh"
+            bg="blackAlpha.700"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            zIndex="overlay"
+            onClick={closeMap}
+          >
+            <Image
+              src={selectedMap!}
+              alt="Enlarged Map"
+              maxW="90%"
+              maxH="90%"
+              border="2px solid white"
+              borderRadius="lg"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </Box>
+        </Portal>
+      )}
     </Box>
   );
 };
