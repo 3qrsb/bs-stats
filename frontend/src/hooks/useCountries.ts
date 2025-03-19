@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-interface Country {
+export interface Country {
   label: string;
   value: string;
   flag: string;

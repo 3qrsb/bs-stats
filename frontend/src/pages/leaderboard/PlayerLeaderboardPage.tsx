@@ -6,24 +6,16 @@ import {
   Heading,
   Image,
   Text,
-  createListCollection,
-  Stack,
-  Link,
   VStack,
+  Link,
 } from "@chakra-ui/react";
-import {
-  SelectRoot,
-  SelectTrigger,
-  SelectValueText,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
+import { Tag } from "@/components/ui/tag";
+import { toaster, Toaster } from "@/components/ui/toaster";
 import { argbToRgba, parseClubName } from "@/utils/colorUtils";
 import { formatTrophies } from "@/utils/formatTrophies";
 import usePlayerLeaderboard from "@/hooks/leaderboard/usePlayerLeaderboard";
-import useCountries from "@/hooks/useCountries";
-import { Tag } from "@/components/ui/tag";
-import { toaster, Toaster } from "@/components/ui/toaster";
+import useCountries, { Country } from "@/hooks/useCountries";
+import CountrySelect from "@/components/CountrySelect";
 
 const PlayerLeaderboardPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -36,24 +28,17 @@ const PlayerLeaderboardPage = () => {
     loading: leaderboardLoading,
     error,
   } = usePlayerLeaderboard(country);
-
   const {
     countries,
     loading: countriesLoading,
     error: countriesError,
   } = useCountries();
 
-  const handleCountryChange = (details: { value: string[] }) => {
-    if (details.value.length > 0) {
-      setSearchParams({ country: details.value[0] });
-    }
+  const handleCountryChange = (newCountry: string) => {
+    setSearchParams({ country: newCountry });
   };
 
-  const countryCollection = createListCollection({
-    items: countries.map(({ label, value }) => ({ label, value })),
-  });
-
-  const selectedCountry = countries.find((c) => c.value === country);
+  const selectedCountry = countries.find((c: Country) => c.value === country);
 
   if (countriesLoading || leaderboardLoading) {
     return (
@@ -77,52 +62,12 @@ const PlayerLeaderboardPage = () => {
       <Heading mb={6} fontSize={{ base: "2xl", md: "3xl" }} textAlign="center">
         Player Leaderboard
       </Heading>
-
-      <Box mb={3} display="flex" justifyContent="center">
-        <SelectRoot
-          collection={countryCollection}
-          value={[country]}
-          onValueChange={handleCountryChange}
-          mb={4}
-          size="md"
-          width={{ base: "100%", sm: "250px" }}
-        >
-          <SelectTrigger>
-            <Stack direction="row" align="center" flex="1">
-              {selectedCountry?.flag && (
-                <Image
-                  src={selectedCountry.flag}
-                  alt={selectedCountry.label}
-                  width="16px"
-                  height="12px"
-                />
-              )}
-              <SelectValueText placeholder="Select location" />
-            </Stack>
-          </SelectTrigger>
-          <SelectContent>
-            {countries.map((country) => (
-              <SelectItem
-                item={{ label: country.label, value: country.value }}
-                key={country.value}
-              >
-                <Stack direction="row" align="center" gap={2}>
-                  {country.flag && (
-                    <Image
-                      src={country.flag}
-                      alt={country.label}
-                      width="16px"
-                      height="12px"
-                    />
-                  )}
-                  <Text>{country.label}</Text>
-                </Stack>
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </SelectRoot>
-      </Box>
-
+      <CountrySelect
+        countries={countries}
+        selectedCountry={selectedCountry}
+        value={country}
+        onChange={handleCountryChange}
+      />
       <Table.ScrollArea
         borderWidth="1px"
         rounded="md"
