@@ -10,7 +10,7 @@ import {
   Link,
 } from "@chakra-ui/react";
 import { Tag } from "@/components/ui/tag";
-import { toaster, Toaster } from "@/components/ui/toaster";
+import { toaster } from "@/components/ui/toaster";
 import { argbToRgba, parseClubName } from "@/utils/colorUtils";
 import { formatTrophies } from "@/utils/formatTrophies";
 import usePlayerLeaderboard from "@/hooks/leaderboard/usePlayerLeaderboard";
@@ -118,7 +118,6 @@ const PlayerLeaderboardPage = () => {
                     >
                       {player.name}
                     </Link>
-                    <Toaster />
                     <Tag
                       size="sm"
                       variant="outline"

@@ -10,7 +10,7 @@ import {
   Link,
 } from "@chakra-ui/react";
 import { Tag } from "@/components/ui/tag";
-import { Toaster, toaster } from "@/components/ui/toaster";
+import { toaster } from "@/components/ui/toaster";
 import { parseClubName } from "@/utils/colorUtils";
 import useClubLeaderboard from "@/hooks/leaderboard/useClubLeaderboard";
 import useCountries, { Country } from "@/hooks/useCountries";
@@ -120,7 +120,6 @@ const ClubLeaderboardPage = () => {
                     >
                       {parseClubName(club.name).name}
                     </Link>
-                    <Toaster />
                     <Tag
                       size="sm"
                       variant="outline"
