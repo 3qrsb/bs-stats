@@ -68,6 +68,13 @@ const PlayerLeaderboardPage = () => {
         value={country}
         onChange={handleCountryChange}
       />
+      <button
+        onClick={() => {
+          throw new Error("This is a test error for Sentry");
+        }}
+      >
+        Trigger Error
+      </button>
       <Table.ScrollArea
         borderWidth="1px"
         rounded="md"
