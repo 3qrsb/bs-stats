@@ -11,10 +11,12 @@ import {
 } from "@chakra-ui/react";
 import { Tag } from "@/components/ui/tag";
 import { toaster } from "@/components/ui/toaster";
-import { parseClubName } from "@/utils/colorUtils";
+import CountrySelect from "@/components/CountrySelect";
+import ErrorState from "@/components/ErrorState";
 import useClubLeaderboard from "@/hooks/leaderboard/useClubLeaderboard";
 import useCountries, { Country } from "@/hooks/useCountries";
-import CountrySelect from "@/components/CountrySelect";
+import { parseClubName } from "@/utils/colorUtils";
+import { refetchAll } from "@/utils/refetchAll";
 
 const ClubLeaderboardPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -26,12 +28,14 @@ const ClubLeaderboardPage = () => {
     leaderboard,
     loading: leaderboardLoading,
     error,
+    refetch: refetchLeaderboard,
   } = useClubLeaderboard(country);
 
   const {
     countries,
     loading: countriesLoading,
     error: countriesError,
+    refetch: refetchCountries,
   } = useCountries();
 
   const handleCountryChange = (newCountry: string) => {
@@ -39,6 +43,10 @@ const ClubLeaderboardPage = () => {
   };
 
   const selectedCountry = countries.find((c: Country) => c.value === country);
+  const errorMessage = countriesError || error;
+  const handleRetry = () => {
+    refetchAll(refetchLeaderboard, refetchCountries);
+  };
 
   if (countriesLoading || leaderboardLoading) {
     return (
@@ -48,13 +56,8 @@ const ClubLeaderboardPage = () => {
     );
   }
 
-  if (countriesError || error) {
-    const errorMessage = countriesError || error;
-    return (
-      <Box color="red.500" mt="8">
-        {errorMessage}
-      </Box>
-    );
+  if (errorMessage) {
+    return <ErrorState message={errorMessage} onRetry={handleRetry} />;
   }
 
   return (
@@ -92,8 +95,8 @@ const ClubLeaderboardPage = () => {
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {leaderboard.map((club, index) => (
-              <Table.Row key={index}>
+            {leaderboard.map((club) => (
+              <Table.Row key={club.tag}>
                 <Table.Cell textAlign="start">{club.rank}</Table.Cell>
                 <Table.Cell display="flex" alignItems="center">
                   {club.badgeUrl ? (

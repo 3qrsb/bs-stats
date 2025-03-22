@@ -11,11 +11,13 @@ import {
 } from "@chakra-ui/react";
 import { Tag } from "@/components/ui/tag";
 import { toaster } from "@/components/ui/toaster";
-import { argbToRgba, parseClubName } from "@/utils/colorUtils";
-import { formatTrophies } from "@/utils/formatTrophies";
+import CountrySelect from "@/components/CountrySelect";
+import ErrorState from "@/components/ErrorState";
 import usePlayerLeaderboard from "@/hooks/leaderboard/usePlayerLeaderboard";
 import useCountries, { Country } from "@/hooks/useCountries";
-import CountrySelect from "@/components/CountrySelect";
+import { argbToRgba, parseClubName } from "@/utils/colorUtils";
+import { formatTrophies } from "@/utils/formatTrophies";
+import { refetchAll } from "@/utils/refetchAll";
 
 const PlayerLeaderboardPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -27,11 +29,14 @@ const PlayerLeaderboardPage = () => {
     leaderboard,
     loading: leaderboardLoading,
     error,
+    refetch: refetchLeaderboard,
   } = usePlayerLeaderboard(country);
+
   const {
     countries,
     loading: countriesLoading,
     error: countriesError,
+    refetch: refetchCountries,
   } = useCountries();
 
   const handleCountryChange = (newCountry: string) => {
@@ -39,6 +44,10 @@ const PlayerLeaderboardPage = () => {
   };
 
   const selectedCountry = countries.find((c: Country) => c.value === country);
+  const errorMessage = countriesError || error;
+  const handleRetry = () => {
+    refetchAll(refetchLeaderboard, refetchCountries);
+  };
 
   if (countriesLoading || leaderboardLoading) {
     return (
@@ -48,13 +57,8 @@ const PlayerLeaderboardPage = () => {
     );
   }
 
-  if (countriesError || error) {
-    const errorMessage = countriesError || error;
-    return (
-      <Box color="red.500" mt="8">
-        {errorMessage}
-      </Box>
-    );
+  if (errorMessage) {
+    return <ErrorState message={errorMessage} onRetry={handleRetry} />;
   }
 
   return (
@@ -68,13 +72,6 @@ const PlayerLeaderboardPage = () => {
         value={country}
         onChange={handleCountryChange}
       />
-      <button
-        onClick={() => {
-          throw new Error("This is a test error for Sentry");
-        }}
-      >
-        Trigger Error
-      </button>
       <Table.ScrollArea
         borderWidth="1px"
         rounded="md"
@@ -100,7 +97,7 @@ const PlayerLeaderboardPage = () => {
           </Table.Header>
           <Table.Body>
             {leaderboard.map((player, index) => (
-              <Table.Row key={index}>
+              <Table.Row key={player.tag || index}>
                 <Table.Cell textAlign="start">{player.rank}</Table.Cell>
                 <Table.Cell display="flex" alignItems="center">
                   {player.icon.url ? (
@@ -134,7 +131,7 @@ const PlayerLeaderboardPage = () => {
                       onClick={() => {
                         navigator.clipboard.writeText(player.tag);
                         toaster.create({
-                          title: "Club tag copied!",
+                          title: "Player tag copied!",
                           type: "success",
                           duration: 2000,
                         });
