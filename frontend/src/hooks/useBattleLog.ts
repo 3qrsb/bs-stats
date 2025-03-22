@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import axios, { AxiosError } from "axios";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 interface Brawler {
   id: number;
   name: string;
@@ -48,7 +50,7 @@ const useBattleLog = (playerTag: string) => {
 
       try {
         const response = await axios.get<{ items: BattleLogEntry[] }>(
-          `http://localhost:3000/battlelog/${playerTag}`
+          `${API_URL}/battlelog/${playerTag}`
         );
         setBattleLog(response.data?.items || []);
       } catch (err) {

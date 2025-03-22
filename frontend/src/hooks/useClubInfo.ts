@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import axios, { AxiosError } from "axios";
 import { Club } from "@/types/clubInfo";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const useClubInfo = (tags: string[]) => {
   const [clubInfos, setClubInfos] = useState<Record<string, Club | null>>({});
   const [loading, setLoading] = useState<Record<string, boolean>>({});
@@ -13,9 +15,7 @@ const useClubInfo = (tags: string[]) => {
       setErrors((prev) => ({ ...prev, [tag]: "" }));
 
       try {
-        const response = await axios.get<Club>(
-          `http://localhost:3000/club/${tag}`
-        );
+        const response = await axios.get<Club>(`${API_URL}/club/${tag}`);
         setClubInfos((prev) => ({ ...prev, [tag]: response.data }));
       } catch (err) {
         const error = err as AxiosError<{ message?: string }>;

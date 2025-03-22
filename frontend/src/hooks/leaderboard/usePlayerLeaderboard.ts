@@ -3,6 +3,8 @@ import axios from "axios";
 import { PlayerRanking } from "@/types/playerInfo";
 import usePlayerIcons from "../BrawlApiIcons/usePlayerIcons";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const usePlayerLeaderboard = (country: string) => {
   const [leaderboard, setLeaderboard] = useState<PlayerRanking[]>([]);
   const [loading, setLoading] = useState(true);
@@ -19,7 +21,7 @@ const usePlayerLeaderboard = (country: string) => {
     setError("");
     try {
       const response = await axios.get<{ items: PlayerRanking[] }>(
-        `http://localhost:3000/leaderboard/players?country=${country}`
+        `${API_URL}/leaderboard/players?country=${country}`
       );
       const players = response.data.items;
       const enrichedPlayers = players.map((player) => ({

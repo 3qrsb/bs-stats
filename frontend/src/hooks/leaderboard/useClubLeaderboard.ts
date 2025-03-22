@@ -3,6 +3,8 @@ import axios from "axios";
 import { ClubRanking } from "@/types/clubInfo";
 import useClubIcons from "../BrawlApiIcons/useClubIcons";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const useClubLeaderboard = (country: string) => {
   const [leaderboard, setLeaderboard] = useState<ClubRanking[]>([]);
   const [loading, setLoading] = useState(true);
@@ -20,7 +22,7 @@ const useClubLeaderboard = (country: string) => {
 
     try {
       const response = await axios.get<{ items: ClubRanking[] }>(
-        `http://localhost:3000/leaderboard/clubs?country=${country}`
+        `${API_URL}/leaderboard/clubs?country=${country}`
       );
 
       const clubs = response.data.items;

@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import axios, { AxiosError } from "axios";
 import { Player } from "@/types/playerInfo";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const usePlayerInfo = (tags: string[]) => {
   const [playerInfos, setPlayerInfos] = useState<Record<string, Player | null>>(
     {}
@@ -16,7 +18,7 @@ const usePlayerInfo = (tags: string[]) => {
 
       try {
         const response = await axios.get<Player>(
-          `http://localhost:3000/brawl-stars/players/${tag}`
+          `${API_URL}/brawl-stars/players/${tag}`
         );
         setPlayerInfos((prev) => ({ ...prev, [tag]: response.data }));
       } catch (err) {
