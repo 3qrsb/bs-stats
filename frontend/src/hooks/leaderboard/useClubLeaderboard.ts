@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { ClubRanking } from "@/types/clubInfo";
 import useClubIcons from "../BrawlApiIcons/useClubIcons";
@@ -14,40 +14,42 @@ const useClubLeaderboard = (country: string) => {
     error: iconsError,
   } = useClubIcons();
 
-  useEffect(() => {
-    const fetchClubLeaderboard = async () => {
-      setLoading(true);
+  const fetchClubLeaderboard = useCallback(async () => {
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await axios.get<{ items: ClubRanking[] }>(
+        `http://localhost:3000/leaderboard/clubs?country=${country}`
+      );
+
+      const clubs = response.data.items;
+
+      const enrichedClubs = clubs.map((club) => ({
+        ...club,
+        badgeUrl: clubIcons[club.badgeId] || undefined,
+      }));
+
+      setLeaderboard(enrichedClubs);
       setError("");
+    } catch (err) {
+      setError(`Failed to fetch club leaderboard: ${err}`);
+    } finally {
+      setLoading(false);
+    }
+  }, [country, clubIcons]);
 
-      try {
-        const response = await axios.get<{ items: ClubRanking[] }>(
-          `http://localhost:3000/leaderboard/clubs?country=${country}`
-        );
-
-        const clubs = response.data.items;
-
-        const enrichedClubs = clubs.map((club) => ({
-          ...club,
-          badgeUrl: clubIcons[club.badgeId] || undefined,
-        }));
-
-        setLeaderboard(enrichedClubs);
-      } catch (err) {
-        setError(`Failed to fetch club leaderboard: ${err}`);
-      } finally {
-        setLoading(false);
-      }
-    };
-
+  useEffect(() => {
     if (!iconsLoading) {
       fetchClubLeaderboard();
     }
-  }, [country, clubIcons, iconsLoading]);
+  }, [fetchClubLeaderboard, iconsLoading]);
 
   return {
     leaderboard,
     loading: loading || iconsLoading,
     error: error || iconsError,
+    refetch: fetchClubLeaderboard,
   };
 };
 
