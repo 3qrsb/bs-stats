@@ -14,6 +14,7 @@ import { InputGroup } from "@/components/ui/input-group";
 import { Button } from "@/components/ui/button";
 import { Tooltip } from "@/components/ui/tooltip";
 import usePlayerInfo from "@/hooks/usePlayerInfo";
+import FeaturesSection from "@/components/FeaturesSection";
 
 const HomePage = () => {
   const [playerTag, setPlayerTag] = useState("");
@@ -59,7 +60,9 @@ const HomePage = () => {
 
   return (
     <VStack mt={8}>
-      <Box fontWeight="bold">Enter a Brawl Stars Player Tag:</Box>
+      <Box fontWeight="bold" fontSize="lg" mt={8}>
+        Enter a Brawl Stars Player Tag:
+      </Box>
       <Group attached>
         <InputAddon>
           <FaHashtag />
@@ -76,7 +79,8 @@ const HomePage = () => {
         </InputGroup>
       </Group>
       <Button
-        size="md"
+        size="xl"
+        fontSize="lg"
         colorPalette="cyan"
         variant="subtle"
         onClick={handleSearch}
@@ -86,7 +90,7 @@ const HomePage = () => {
 
       {recentTags.length > 0 && (
         <Box mt={4}>
-          <Box fontWeight="bold" textAlign="center">
+          <Box fontWeight="bold" fontSize="lg" textAlign="center">
             Recently Searched Tags:
           </Box>
           <HStack mt={2} gap={{ base: 1, md: 2 }} justify="center" wrap="wrap">
@@ -118,6 +122,9 @@ const HomePage = () => {
           </HStack>
         </Box>
       )}
+      <Box mt={20}>
+        <FeaturesSection />
+      </Box>
     </VStack>
   );
 };
