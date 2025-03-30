@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaHashtag } from "react-icons/fa";
+import { HashIcon } from "lucide-react";
 import {
   Box,
   Input,
@@ -9,6 +9,8 @@ import {
   Group,
   InputAddon,
   Badge,
+  Text,
+  Stack,
 } from "@chakra-ui/react";
 import { InputGroup } from "@/components/ui/input-group";
 import { Button } from "@/components/ui/button";
@@ -30,18 +32,18 @@ const HomePage = () => {
   const { playerInfos, loading, errors } = usePlayerInfo(recentTags);
 
   const handleSearch = () => {
-    if (playerTag) {
-      setRecentTags((prevTags) => {
-        const updatedTags = [
-          playerTag,
-          ...prevTags.filter((tag) => tag !== playerTag),
-        ];
-        const newTags = updatedTags.slice(0, 5);
-        localStorage.setItem("recentTags", JSON.stringify(newTags));
-        return newTags;
-      });
-      navigate(`/player/${encodeURIComponent(playerTag)}`);
-    }
+    if (!playerTag) return;
+
+    setRecentTags((prevTags) => {
+      const updatedTags = [
+        playerTag,
+        ...prevTags.filter((tag) => tag !== playerTag),
+      ];
+      const newTags = updatedTags.slice(0, 5);
+      localStorage.setItem("recentTags", JSON.stringify(newTags));
+      return newTags;
+    });
+    navigate(`/player/${encodeURIComponent(playerTag)}`);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,40 +62,45 @@ const HomePage = () => {
   };
 
   return (
-    <VStack mt={8}>
-      <Box fontWeight="bold" fontSize="lg" mt={8}>
-        Enter a Brawl Stars Player Tag:
-      </Box>
-      <Group attached>
-        <InputAddon>
-          <FaHashtag />
-        </InputAddon>
-        <InputGroup>
-          <Input
-            placeholder="2V8RUCP"
-            value={playerTag}
-            onChange={handleInputChange}
-            onKeyDown={handleKeyDown}
-            maxWidth="400px"
-            size="lg"
-          />
-        </InputGroup>
-      </Group>
-      <Button
-        size="xl"
-        fontSize="lg"
-        colorPalette="cyan"
-        variant="subtle"
-        onClick={handleSearch}
-      >
-        Search
-      </Button>
+    <VStack mt={12} gap={10} align="center" px={4}>
+      <Stack align="center" gap={4}>
+        <Text fontWeight="bold" fontSize="xl" textAlign="center">
+          Enter a Brawl Stars Player Tag
+        </Text>
+
+        <Group attached>
+          <InputAddon>
+            <HashIcon />
+          </InputAddon>
+          <InputGroup>
+            <Input
+              placeholder="8L2CCUJ8V"
+              value={playerTag}
+              onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
+              maxWidth="400px"
+              size="lg"
+              autoFocus
+            />
+          </InputGroup>
+        </Group>
+
+        <Button
+          size="xl"
+          fontSize="lg"
+          colorPalette="cyan"
+          variant="subtle"
+          onClick={handleSearch}
+        >
+          Search
+        </Button>
+      </Stack>
 
       {recentTags.length > 0 && (
-        <Box mt={4}>
-          <Box fontWeight="bold" fontSize="lg" textAlign="center">
-            Recently Searched Tags:
-          </Box>
+        <Box>
+          <Text fontWeight="bold" fontSize="lg" textAlign="center">
+            Recently Searched Tags
+          </Text>
           <HStack mt={2} gap={{ base: 1, md: 2 }} justify="center" wrap="wrap">
             {recentTags.map((tag) => (
               <Tooltip
@@ -115,6 +122,7 @@ const HomePage = () => {
                   onClick={() => handleRecentTagClick(tag)}
                   size={{ base: "sm", md: "md" }}
                   colorPalette="orange"
+                  cursor="pointer"
                 >
                   {`#${tag}`}
                 </Badge>
@@ -123,11 +131,12 @@ const HomePage = () => {
           </HStack>
         </Box>
       )}
-      <Box mt={10}>
+
+      <Box w="100%">
         <TagHelpSection />
       </Box>
 
-      <Box mt={20}>
+      <Box w="100%">
         <FeaturesSection />
       </Box>
     </VStack>
