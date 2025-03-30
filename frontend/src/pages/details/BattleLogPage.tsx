@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { FaStar } from "react-icons/fa";
+import { parseISO, formatDistanceToNow } from "date-fns";
 import {
   Box,
   Spinner,
@@ -7,15 +9,13 @@ import {
   VStack,
   Text,
   Table,
-  Image,
   Badge,
   Flex,
   Portal,
   Link,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import LazyImage from "@/components/LazyImage";
 import useBattleLog from "@/hooks/useBattleLog";
-import { parseISO, formatDistanceToNow } from "date-fns";
 import useBrawlerIcons from "@/hooks/BrawlApiIcons/useBrawlerIcons";
 import useMapIcons from "@/hooks/BrawlApiIcons/useMapIcons";
 import { formatRoleName } from "@/utils/stringUtils";
@@ -105,7 +105,7 @@ const BattleLogPage = () => {
                                   transition: "0.2s",
                                 }}
                               >
-                                <Image
+                                <LazyImage
                                   src={mapIcons[battle.event.id].imageUrl}
                                   alt={mapIcons[battle.event.id].name}
                                   boxSize="50px"
@@ -192,7 +192,7 @@ const BattleLogPage = () => {
                               >
                                 <Box position="relative">
                                   {brawlerIcons[player.brawler.id] ? (
-                                    <Image
+                                    <LazyImage
                                       src={brawlerIcons[player.brawler.id]}
                                       alt={player.brawler.name}
                                       boxSize="35px"
@@ -264,7 +264,7 @@ const BattleLogPage = () => {
             zIndex="overlay"
             onClick={closeMap}
           >
-            <Image
+            <LazyImage
               src={selectedMap!}
               alt="Enlarged Map"
               maxW="90%"

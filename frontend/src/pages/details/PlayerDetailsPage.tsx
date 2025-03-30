@@ -6,7 +6,6 @@ import {
   Spinner,
   VStack,
   Separator,
-  Image,
   Card,
   StatRoot,
   StatLabel,
@@ -16,12 +15,13 @@ import {
   Link,
 } from "@chakra-ui/react";
 import { Tag } from "@/components/ui/tag";
-import { toaster, Toaster } from "@/components/ui/toaster";
-import { argbToRgba, parseClubName } from "@/utils/colorUtils";
+import { toaster } from "@/components/ui/toaster";
+import LazyImage from "@/components/LazyImage";
 import usePlayerInfo from "@/hooks/usePlayerInfo";
 import useClubInfo from "@/hooks/useClubInfo";
 import usePlayerIcons from "@/hooks/BrawlApiIcons/usePlayerIcons";
 import useClubIcons from "@/hooks/BrawlApiIcons/useClubIcons";
+import { argbToRgba, parseClubName } from "@/utils/colorUtils";
 
 const PlayerDetailsPage = () => {
   const { tag } = useParams();
@@ -80,7 +80,7 @@ const PlayerDetailsPage = () => {
         <Flex direction={{ base: "column", md: "row" }} align="center" gap={8}>
           <Flex align="center" gap={4}>
             {playerIcons[icon.id] && (
-              <Image
+              <LazyImage
                 src={playerIcons[icon.id]}
                 alt={`${name}'s Icon`}
                 boxSize="100px"
@@ -95,7 +95,6 @@ const PlayerDetailsPage = () => {
               >
                 {name}
               </Heading>
-              <Toaster />
               <Tag
                 size="sm"
                 variant="outline"
@@ -125,7 +124,7 @@ const PlayerDetailsPage = () => {
               borderRadius="md"
             >
               {clubIcons[club.badgeId] && (
-                <Image
+                <LazyImage
                   src={clubIcons[club.badgeId]}
                   alt={`${club.name} Badge`}
                   boxSize="30px"

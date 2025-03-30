@@ -3,20 +3,20 @@ import {
   Box,
   Spinner,
   Heading,
-  Image,
   Text,
   VStack,
   Table,
   Link,
 } from "@chakra-ui/react";
-import useClubInfo from "@/hooks/useClubInfo";
-import { argbToRgba, parseClubName } from "@/utils/colorUtils";
-import { formatRoleName } from "@/utils/stringUtils";
+import { toaster } from "@/components/ui/toaster";
 import { Tag } from "@/components/ui/tag";
-import { toaster, Toaster } from "@/components/ui/toaster";
 import { DataListItem, DataListRoot } from "@/components/ui/data-list";
+import LazyImage from "@/components/LazyImage";
+import useClubInfo from "@/hooks/useClubInfo";
 import usePlayerIcons from "@/hooks/BrawlApiIcons/usePlayerIcons";
 import useClubIcons from "@/hooks/BrawlApiIcons/useClubIcons";
+import { argbToRgba, parseClubName } from "@/utils/colorUtils";
+import { formatRoleName } from "@/utils/stringUtils";
 
 const ClubDetailsPage = () => {
   const { clubTag } = useParams<{ clubTag: string }>();
@@ -63,7 +63,7 @@ const ClubDetailsPage = () => {
       <VStack gap={6} align="stretch">
         <Box display="flex" alignItems="center" justifyContent="center" gap={4}>
           {clubIcons[club.badgeId] ? (
-            <Image
+            <LazyImage
               src={clubIcons[club.badgeId]}
               alt={`${club.name} Badge`}
               boxSize="70px"
@@ -150,7 +150,7 @@ const ClubDetailsPage = () => {
                   <Table.Cell>{index + 1}</Table.Cell>
                   <Table.Cell display="flex" alignItems="center">
                     {playerIcons[member.icon.id] ? (
-                      <Image
+                      <LazyImage
                         src={playerIcons[member.icon.id]}
                         alt={member.name}
                         boxSize="35px"
@@ -171,7 +171,6 @@ const ClubDetailsPage = () => {
                       >
                         {member.name}
                       </Link>
-                      <Toaster />
                       <Tag
                         size="sm"
                         variant="outline"

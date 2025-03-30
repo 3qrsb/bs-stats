@@ -4,7 +4,6 @@ import {
   Spinner,
   Table,
   Heading,
-  Image,
   Text,
   VStack,
   Link,
@@ -13,6 +12,7 @@ import { Tag } from "@/components/ui/tag";
 import { toaster } from "@/components/ui/toaster";
 import CountrySelect from "@/components/CountrySelect";
 import ErrorState from "@/components/ErrorState";
+import LazyImage from "@/components/LazyImage";
 import useClubLeaderboard from "@/hooks/leaderboard/useClubLeaderboard";
 import useCountries, { Country } from "@/hooks/useCountries";
 import { parseClubName } from "@/utils/colorUtils";
@@ -100,7 +100,7 @@ const ClubLeaderboardPage = () => {
                 <Table.Cell textAlign="start">{club.rank}</Table.Cell>
                 <Table.Cell display="flex" alignItems="center">
                   {club.badgeUrl ? (
-                    <Image
+                    <LazyImage
                       src={club.badgeUrl}
                       alt={`${club.name}'s badge`}
                       boxSize="35px"

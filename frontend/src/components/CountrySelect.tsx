@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Image, Stack, Text } from "@chakra-ui/react";
+import { Box, Stack, Text } from "@chakra-ui/react";
 import {
   SelectRoot,
   SelectTrigger,
@@ -8,6 +8,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { createListCollection } from "@chakra-ui/react";
+import LazyImage from "./LazyImage";
 import { Country } from "@/hooks/useCountries";
 
 interface CountrySelectProps {
@@ -46,7 +47,7 @@ const CountrySelect: React.FC<CountrySelectProps> = ({
         <SelectTrigger>
           <Stack direction="row" align="center" flex="1">
             {selectedCountry?.flag && (
-              <Image
+              <LazyImage
                 src={selectedCountry.flag}
                 alt={selectedCountry.label}
                 width="16px"
@@ -64,7 +65,7 @@ const CountrySelect: React.FC<CountrySelectProps> = ({
             >
               <Stack direction="row" align="center" gap={2}>
                 {country.flag && (
-                  <Image
+                  <LazyImage
                     src={country.flag}
                     alt={country.label}
                     width="16px"

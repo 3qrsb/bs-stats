@@ -4,7 +4,6 @@ import {
   Spinner,
   Table,
   Heading,
-  Image,
   Text,
   VStack,
   Link,
@@ -13,6 +12,7 @@ import { Tag } from "@/components/ui/tag";
 import { toaster } from "@/components/ui/toaster";
 import CountrySelect from "@/components/CountrySelect";
 import ErrorState from "@/components/ErrorState";
+import LazyImage from "@/components/LazyImage";
 import usePlayerLeaderboard from "@/hooks/leaderboard/usePlayerLeaderboard";
 import useCountries, { Country } from "@/hooks/useCountries";
 import { argbToRgba, parseClubName } from "@/utils/colorUtils";
@@ -101,10 +101,12 @@ const PlayerLeaderboardPage = () => {
                 <Table.Cell textAlign="start">{player.rank}</Table.Cell>
                 <Table.Cell display="flex" alignItems="center">
                   {player.icon.url ? (
-                    <Image
+                    <LazyImage
                       src={player.icon.url}
                       alt={`${player.name}'s icon`}
                       boxSize="35px"
+                      borderRadius="md"
+                      fit="contain"
                       mr={2}
                     />
                   ) : (

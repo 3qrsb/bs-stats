@@ -1,6 +1,7 @@
-import { Tabs, Text, Stack, Image, Box, HStack } from "@chakra-ui/react";
 import { HelpCircleIcon } from "lucide-react";
 import { motion } from "framer-motion";
+import { Tabs, Text, Stack, Box, HStack } from "@chakra-ui/react";
+import LazyImage from "./LazyImage";
 
 const MotionBox = motion.create(Box);
 
@@ -63,12 +64,11 @@ const TagHelpSection = () => {
               textAlign="left"
             >
               <Text mb={3}>{item.text}</Text>
-              <Image
+              <LazyImage
                 src={item.image}
                 alt={item.title}
                 borderRadius="md"
                 maxW="100%"
-                loading="lazy"
               />
             </MotionBox>
           </Tabs.Content>
