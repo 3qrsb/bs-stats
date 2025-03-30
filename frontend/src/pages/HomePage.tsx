@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Tooltip } from "@/components/ui/tooltip";
 import usePlayerInfo from "@/hooks/usePlayerInfo";
 import FeaturesSection from "@/components/FeaturesSection";
+import TagHelpSection from "@/components/TagHelpSection";
 
 const HomePage = () => {
   const [playerTag, setPlayerTag] = useState("");
@@ -122,6 +123,10 @@ const HomePage = () => {
           </HStack>
         </Box>
       )}
+      <Box mt={10}>
+        <TagHelpSection />
+      </Box>
+
       <Box mt={20}>
         <FeaturesSection />
       </Box>
