@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import configuration from './config/configuration';
-import { BrawlStarsModule } from './brawl-stars/brawl-stars.module';
+import { PlayerModule } from './player/player.module';
 import { LeaderboardModule } from './leaderboard/leaderboard.module';
 import { ClubModule } from './club/club.module';
 import { BattleLogModule } from './battlelog/battlelog.module';
@@ -12,7 +12,7 @@ import { BattleLogModule } from './battlelog/battlelog.module';
       isGlobal: true,
       load: [configuration],
     }),
-    BrawlStarsModule,
+    PlayerModule,
     LeaderboardModule,
     ClubModule,
     BattleLogModule,

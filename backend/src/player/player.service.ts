@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 
 @Injectable()
-export class BrawlStarsService {
+export class PlayerService {
   private readonly apiKey: string;
   private readonly baseUrl: string;
 

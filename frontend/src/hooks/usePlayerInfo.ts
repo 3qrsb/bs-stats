@@ -18,7 +18,7 @@ const usePlayerInfo = (tags: string[]) => {
 
       try {
         const response = await axios.get<Player>(
-          `${API_URL}/brawl-stars/players/${tag}`
+          `${API_URL}/player/${tag}`
         );
         setPlayerInfos((prev) => ({ ...prev, [tag]: response.data }));
       } catch (err) {
