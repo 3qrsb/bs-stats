@@ -4,20 +4,17 @@ import { HashIcon } from "lucide-react";
 import {
   Box,
   Input,
-  HStack,
   VStack,
   Group,
   InputAddon,
-  Badge,
   Text,
   Stack,
 } from "@chakra-ui/react";
 import { InputGroup } from "@/components/ui/input-group";
 import { Button } from "@/components/ui/button";
-import { Tooltip } from "@/components/ui/tooltip";
-import usePlayerInfo from "@/hooks/usePlayerInfo";
 import FeaturesSection from "@/components/FeaturesSection";
 import TagHelpSection from "@/components/TagHelpSection";
+import RecentlySearchedTagsSection from "@/components/RecentlySearchedTagsSection";
 
 const HomePage = () => {
   const [playerTag, setPlayerTag] = useState("");
@@ -28,8 +25,6 @@ const HomePage = () => {
     const savedTags = JSON.parse(localStorage.getItem("recentTags") || "[]");
     setRecentTags(savedTags);
   }, []);
-
-  const { playerInfos, loading, errors } = usePlayerInfo(recentTags);
 
   const handleSearch = () => {
     if (!playerTag) return;
@@ -55,10 +50,6 @@ const HomePage = () => {
     if (e.key === "Enter") {
       handleSearch();
     }
-  };
-
-  const handleRecentTagClick = (tag: string) => {
-    navigate(`/player/${encodeURIComponent(tag)}`);
   };
 
   return (
@@ -97,38 +88,8 @@ const HomePage = () => {
       </Stack>
 
       {recentTags.length > 0 && (
-        <Box>
-          <Text fontWeight="bold" fontSize="lg" textAlign="center">
-            Recently Searched Tags
-          </Text>
-          <HStack mt={2} gap={{ base: 1, md: 2 }} justify="center" wrap="wrap">
-            {recentTags.map((tag) => (
-              <Tooltip
-                interactive
-                showArrow
-                openDelay={200}
-                closeDelay={50}
-                content={
-                  loading[tag]
-                    ? "Loading..."
-                    : errors[tag]
-                    ? errors[tag]
-                    : playerInfos[tag]?.name || "No name available"
-                }
-                key={tag}
-              >
-                <Badge
-                  variant="surface"
-                  onClick={() => handleRecentTagClick(tag)}
-                  size={{ base: "sm", md: "md" }}
-                  colorPalette="orange"
-                  cursor="pointer"
-                >
-                  {`#${tag}`}
-                </Badge>
-              </Tooltip>
-            ))}
-          </HStack>
+        <Box w="100%">
+          <RecentlySearchedTagsSection tags={recentTags} />
         </Box>
       )}
 
