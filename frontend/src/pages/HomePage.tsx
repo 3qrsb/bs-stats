@@ -11,10 +11,12 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import { InputGroup } from "@/components/ui/input-group";
+import { toaster } from "@/components/ui/toaster";
 import { Button } from "@/components/ui/button";
 import FeaturesSection from "@/components/FeaturesSection";
 import TagHelpSection from "@/components/TagHelpSection";
 import RecentlySearchedTagsSection from "@/components/RecentlySearchedTagsSection";
+import { validatePlayerTag } from "@/hooks/usePlayerInfo";
 
 const HomePage = () => {
   const [playerTag, setPlayerTag] = useState("");
@@ -26,8 +28,19 @@ const HomePage = () => {
     setRecentTags(savedTags);
   }, []);
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     if (!playerTag) return;
+
+    const isValid = await validatePlayerTag(playerTag);
+    if (!isValid) {
+      toaster.create({
+        title: "Invalid Player Tag",
+        description: "The tag you entered does not exist or is incorrect.",
+        type: "error",
+        duration: 4000,
+      });
+      return;
+    }
 
     setRecentTags((prevTags) => {
       const updatedTags = [
@@ -38,6 +51,7 @@ const HomePage = () => {
       localStorage.setItem("recentTags", JSON.stringify(newTags));
       return newTags;
     });
+
     navigate(`/player/${encodeURIComponent(playerTag)}`);
   };
 

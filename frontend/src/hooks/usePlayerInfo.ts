@@ -17,9 +17,7 @@ const usePlayerInfo = (tags: string[]) => {
       setErrors((prev) => ({ ...prev, [tag]: "" }));
 
       try {
-        const response = await axios.get<Player>(
-          `${API_URL}/player/${tag}`
-        );
+        const response = await axios.get<Player>(`${API_URL}/player/${tag}`);
         setPlayerInfos((prev) => ({ ...prev, [tag]: response.data }));
       } catch (err) {
         const error = err as AxiosError<{ message?: string }>;
@@ -42,6 +40,17 @@ const usePlayerInfo = (tags: string[]) => {
   }, [tags, playerInfos, loading, errors]);
 
   return { playerInfos, loading, errors };
+};
+
+export const validatePlayerTag = async (tag: string): Promise<boolean> => {
+  try {
+    const response = await axios.get<{ valid: boolean }>(
+      `${API_URL}/player/validate/${encodeURIComponent(tag)}`
+    );
+    return response.data.valid;
+  } catch {
+    return false;
+  }
 };
 
 export default usePlayerInfo;
