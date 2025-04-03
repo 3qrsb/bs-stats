@@ -27,6 +27,17 @@ export class PlayerService {
       );
     }
   }
+
+  async validatePlayerTag(
+    playerTag: string,
+  ): Promise<{ valid: boolean; name?: string }> {
+    try {
+      const data = await this.getPlayerInfo(playerTag);
+      return { valid: true, name: data.name };
+    } catch {
+      return { valid: false };
+    }
+  }
 }
 
 function sanitizePlayerTag(tag: string): string {
