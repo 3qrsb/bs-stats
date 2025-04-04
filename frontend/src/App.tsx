@@ -6,6 +6,7 @@ import ClubLeaderboardPage from "./pages/leaderboard/ClubLeaderboardPage";
 import ClubDetailsPage from "./pages/details/ClubDetailsPage";
 import PlayerDetailsPage from "./pages/details/PlayerDetailsPage";
 import BattleLogPage from "./pages/details/BattleLogPage";
+import NotFoundPage from "./pages/NotFoundPage"; // Import the NotFoundPage component
 import { Toaster } from "@/components/ui/toaster";
 
 const App = () => {
@@ -59,6 +60,14 @@ const App = () => {
             element={
               <Layout>
                 <ClubLeaderboardPage />
+              </Layout>
+            }
+          />
+          <Route
+            path="*"
+            element={
+              <Layout>
+                <NotFoundPage />
               </Layout>
             }
           />
