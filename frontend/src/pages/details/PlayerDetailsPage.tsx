@@ -90,8 +90,8 @@ const PlayerDetailsPage = () => {
               <Heading
                 as="h1"
                 fontSize={{ base: "3xl", md: "4xl" }}
-                color={argbToRgba(nameColor)}
                 fontWeight="bold"
+                color={nameColor ? argbToRgba(nameColor) : undefined}
               >
                 {name}
               </Heading>
