@@ -29,4 +29,15 @@ export class ClubService {
       );
     }
   }
+
+  async validateClubTag(
+    tag: string,
+  ): Promise<{ valid: boolean; name?: string }> {
+    try {
+      const clubInfo = await this.getClubInfo(tag);
+      return { valid: true, name: clubInfo.name };
+    } catch {
+      return { valid: false };
+    }
+  }
 }
