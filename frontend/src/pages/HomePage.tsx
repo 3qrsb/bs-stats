@@ -9,6 +9,8 @@ import {
   InputAddon,
   Text,
   Stack,
+  RadioCard,
+  HStack,
 } from "@chakra-ui/react";
 import { InputGroup } from "@/components/ui/input-group";
 import { toaster } from "@/components/ui/toaster";
@@ -17,8 +19,10 @@ import FeaturesSection from "@/components/FeaturesSection";
 import TagHelpSection from "@/components/TagHelpSection";
 import RecentlySearchedTagsSection from "@/components/RecentlySearchedTagsSection";
 import { validatePlayerTag } from "@/hooks/usePlayerInfo";
+import { validateClubTag } from "@/hooks/useClubInfo";
 
 const HomePage = () => {
+  const [tagType, setTagType] = useState<"player" | "club">("player");
   const [playerTag, setPlayerTag] = useState("");
   const [recentTags, setRecentTags] = useState<string[]>([]);
   const navigate = useNavigate();
@@ -31,10 +35,14 @@ const HomePage = () => {
   const handleSearch = async () => {
     if (!playerTag) return;
 
-    const isValid = await validatePlayerTag(playerTag);
+    const isValid =
+      tagType === "player"
+        ? await validatePlayerTag(playerTag)
+        : await validateClubTag(playerTag);
+
     if (!isValid) {
       toaster.create({
-        title: "Invalid Player Tag",
+        title: `Invalid ${tagType === "player" ? "Player" : "Club"} Tag`,
         description: "The tag you entered does not exist or is incorrect.",
         type: "error",
         duration: 4000,
@@ -42,17 +50,19 @@ const HomePage = () => {
       return;
     }
 
-    setRecentTags((prevTags) => {
-      const updatedTags = [
-        playerTag,
-        ...prevTags.filter((tag) => tag !== playerTag),
-      ];
-      const newTags = updatedTags.slice(0, 5);
-      localStorage.setItem("recentTags", JSON.stringify(newTags));
-      return newTags;
-    });
+    if (tagType === "player") {
+      setRecentTags((prevTags) => {
+        const updatedTags = [
+          playerTag,
+          ...prevTags.filter((tag) => tag !== playerTag),
+        ];
+        const newTags = updatedTags.slice(0, 5);
+        localStorage.setItem("recentTags", JSON.stringify(newTags));
+        return newTags;
+      });
+    }
 
-    navigate(`/player/${encodeURIComponent(playerTag)}`);
+    navigate(`/${tagType}/${encodeURIComponent(playerTag)}`);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -70,8 +80,36 @@ const HomePage = () => {
     <VStack mt={12} gap={10} align="center" px={4}>
       <Stack align="center" gap={4}>
         <Text fontWeight="bold" fontSize="xl" textAlign="center">
-          Enter a Brawl Stars Player Tag
+          Enter a Brawl Stars Tag
         </Text>
+
+        <RadioCard.Root
+          value={tagType}
+          onValueChange={(e) => setTagType(e.value as "player" | "club")}
+          orientation="horizontal"
+          align="center"
+          justify="center"
+          size="sm"
+          colorPalette="cyan"
+        >
+          <HStack wrap="wrap" justify="center">
+            <RadioCard.Item value="player">
+              <RadioCard.ItemHiddenInput />
+              <RadioCard.ItemControl>
+                <RadioCard.ItemText whiteSpace="nowrap">
+                  Player Tag
+                </RadioCard.ItemText>
+              </RadioCard.ItemControl>
+            </RadioCard.Item>
+
+            <RadioCard.Item value="club">
+              <RadioCard.ItemHiddenInput />
+              <RadioCard.ItemControl>
+                <RadioCard.ItemText>Club Tag</RadioCard.ItemText>
+              </RadioCard.ItemControl>
+            </RadioCard.Item>
+          </HStack>
+        </RadioCard.Root>
 
         <Group attached>
           <InputAddon>
