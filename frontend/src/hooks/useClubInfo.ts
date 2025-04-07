@@ -40,4 +40,15 @@ const useClubInfo = (tags: string[]) => {
   return { clubInfos, loading, errors };
 };
 
+export const validateClubTag = async (tag: string): Promise<boolean> => {
+  try {
+    const response = await axios.get<{ valid: boolean }>(
+      `${API_URL}/club/validate/${encodeURIComponent(tag)}`
+    );
+    return response.data.valid;
+  } catch {
+    return false;
+  }
+};
+
 export default useClubInfo;
