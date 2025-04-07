@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build && xcopy googlea86d9baaf94bc43b.html dist\\",
+    "build": "tsc -b && vite build && cp googlea86d9baaf94bc43b.html dist/",
     "lint": "eslint .",
     "preview": "vite preview"
   },
