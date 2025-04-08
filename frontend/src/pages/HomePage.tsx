@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import FeaturesSection from "@/components/FeaturesSection";
 import TagHelpSection from "@/components/TagHelpSection";
 import RecentlySearchedTagsSection from "@/components/RecentlySearchedTagsSection";
+import SEO from "@/components/SEO";
 import { validatePlayerTag } from "@/hooks/usePlayerInfo";
 import { validateClubTag } from "@/hooks/useClubInfo";
 
@@ -77,82 +78,89 @@ const HomePage = () => {
   };
 
   return (
-    <VStack mt={12} gap={10} align="center" px={4}>
-      <Stack align="center" gap={4}>
-        <Text fontWeight="bold" fontSize="xl" textAlign="center">
-          Enter a Brawl Stars Tag
-        </Text>
+    <>
+      <SEO
+        title="Brawl Stars Stats | Player Trophy Progression & Leaderboards"
+        description="Enter a Brawl Stars player or club tag to track trophy stats, battle logs, and leaderboards. View detailed player profiles and more!"
+      />
+      
+      <VStack mt={12} gap={10} align="center" px={4}>
+        <Stack align="center" gap={4}>
+          <Text fontWeight="bold" fontSize="xl" textAlign="center" as="h1">
+            Enter a Brawl Stars Tag
+          </Text>
 
-        <RadioCard.Root
-          value={tagType}
-          onValueChange={(e) => setTagType(e.value as "player" | "club")}
-          orientation="horizontal"
-          align="center"
-          justify="center"
-          size="sm"
-          colorPalette="cyan"
-        >
-          <HStack wrap="wrap" justify="center">
-            <RadioCard.Item value="player">
-              <RadioCard.ItemHiddenInput />
-              <RadioCard.ItemControl>
-                <RadioCard.ItemText whiteSpace="nowrap">
-                  Player Tag
-                </RadioCard.ItemText>
-              </RadioCard.ItemControl>
-            </RadioCard.Item>
+          <RadioCard.Root
+            value={tagType}
+            onValueChange={(e) => setTagType(e.value as "player" | "club")}
+            orientation="horizontal"
+            align="center"
+            justify="center"
+            size="sm"
+            colorPalette="cyan"
+          >
+            <HStack wrap="wrap" justify="center">
+              <RadioCard.Item value="player">
+                <RadioCard.ItemHiddenInput />
+                <RadioCard.ItemControl>
+                  <RadioCard.ItemText whiteSpace="nowrap">
+                    Player Tag
+                  </RadioCard.ItemText>
+                </RadioCard.ItemControl>
+              </RadioCard.Item>
 
-            <RadioCard.Item value="club">
-              <RadioCard.ItemHiddenInput />
-              <RadioCard.ItemControl>
-                <RadioCard.ItemText>Club Tag</RadioCard.ItemText>
-              </RadioCard.ItemControl>
-            </RadioCard.Item>
-          </HStack>
-        </RadioCard.Root>
+              <RadioCard.Item value="club">
+                <RadioCard.ItemHiddenInput />
+                <RadioCard.ItemControl>
+                  <RadioCard.ItemText>Club Tag</RadioCard.ItemText>
+                </RadioCard.ItemControl>
+              </RadioCard.Item>
+            </HStack>
+          </RadioCard.Root>
 
-        <Group attached>
-          <InputAddon>
-            <HashIcon />
-          </InputAddon>
-          <InputGroup>
-            <Input
-              placeholder="8L2CCUJ8V"
-              value={playerTag}
-              onChange={handleInputChange}
-              onKeyDown={handleKeyDown}
-              maxWidth="400px"
-              size="lg"
-              autoFocus
-            />
-          </InputGroup>
-        </Group>
+          <Group attached>
+            <InputAddon>
+              <HashIcon />
+            </InputAddon>
+            <InputGroup>
+              <Input
+                placeholder="8L2CCUJ8V"
+                value={playerTag}
+                onChange={handleInputChange}
+                onKeyDown={handleKeyDown}
+                maxWidth="400px"
+                size="lg"
+                autoFocus
+              />
+            </InputGroup>
+          </Group>
 
-        <Button
-          size="xl"
-          fontSize="lg"
-          colorPalette="cyan"
-          variant="subtle"
-          onClick={handleSearch}
-        >
-          Search
-        </Button>
-      </Stack>
+          <Button
+            size="xl"
+            fontSize="lg"
+            colorPalette="cyan"
+            variant="subtle"
+            onClick={handleSearch}
+          >
+            Search
+          </Button>
+        </Stack>
 
-      {recentTags.length > 0 && (
+        {recentTags.length > 0 && (
+          <Box w="100%">
+            <RecentlySearchedTagsSection tags={recentTags} />
+          </Box>
+        )}
+
         <Box w="100%">
-          <RecentlySearchedTagsSection tags={recentTags} />
+          <TagHelpSection />
         </Box>
-      )}
 
-      <Box w="100%">
-        <TagHelpSection />
-      </Box>
-
-      <Box w="100%">
-        <FeaturesSection />
-      </Box>
-    </VStack>
+        <Box w="100%">
+          <FeaturesSection />
+        </Box>
+      </VStack>
+    </>
   );
 };
 
