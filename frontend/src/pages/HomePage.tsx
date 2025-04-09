@@ -86,7 +86,7 @@ const HomePage = () => {
       
       <VStack mt={12} gap={10} align="center" px={4}>
         <Stack align="center" gap={4}>
-          <Text fontWeight="bold" fontSize="xl" textAlign="center" as="h1">
+          <Text fontWeight="bold" fontSize="3xl" textAlign="center" as="h1">
             Enter a Brawl Stars Tag
           </Text>
 
