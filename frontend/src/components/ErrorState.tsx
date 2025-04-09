@@ -3,7 +3,7 @@ import React from "react";
 
 interface ErrorStateProps {
   message: string;
-  onRetry: () => void;
+  onRetry?: () => void;
 }
 
 const ErrorState: React.FC<ErrorStateProps> = ({ message, onRetry }) => {
@@ -12,9 +12,11 @@ const ErrorState: React.FC<ErrorStateProps> = ({ message, onRetry }) => {
       <Text color="red.500" mb="4">
         {message}
       </Text>
-      <Button onClick={onRetry} colorPalette="red">
-        Retry
-      </Button>
+      {onRetry && (
+        <Button onClick={onRetry} colorPalette="red">
+          Retry
+        </Button>
+      )}
     </Box>
   );
 };
