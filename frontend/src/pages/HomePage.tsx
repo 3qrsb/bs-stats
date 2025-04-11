@@ -21,25 +21,34 @@ import RecentlySearchedTagsSection from "@/components/RecentlySearchedTagsSectio
 import SEO from "@/components/SEO";
 import { validatePlayerTag } from "@/hooks/usePlayerInfo";
 import { validateClubTag } from "@/hooks/useClubInfo";
+import type { TagEntry, TagType } from "@/types/search";
 
 const HomePage = () => {
-  const [tagType, setTagType] = useState<"player" | "club">("player");
-  const [playerTag, setPlayerTag] = useState("");
-  const [recentTags, setRecentTags] = useState<string[]>([]);
+  const [tagType, setTagType] = useState<TagType>("player");
+  const [tagInput, setTagInput] = useState("");
+  const [recentTags, setRecentTags] = useState<TagEntry[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const savedTags = JSON.parse(localStorage.getItem("recentTags") || "[]");
-    setRecentTags(savedTags);
+    const saved = localStorage.getItem("recentTagsV2");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved) as TagEntry[];
+        setRecentTags(parsed);
+      } catch {
+        setRecentTags([]);
+      }
+    }
   }, []);
 
   const handleSearch = async () => {
-    if (!playerTag) return;
+    if (!tagInput) return;
 
+    const tag = tagInput.trim().toUpperCase();
     const isValid =
       tagType === "player"
-        ? await validatePlayerTag(playerTag)
-        : await validateClubTag(playerTag);
+        ? await validatePlayerTag(tag)
+        : await validateClubTag(tag);
 
     if (!isValid) {
       toaster.create({
@@ -51,24 +60,36 @@ const HomePage = () => {
       return;
     }
 
-    if (tagType === "player") {
-      setRecentTags((prevTags) => {
-        const updatedTags = [
-          playerTag,
-          ...prevTags.filter((tag) => tag !== playerTag),
-        ];
-        const newTags = updatedTags.slice(0, 5);
-        localStorage.setItem("recentTags", JSON.stringify(newTags));
-        return newTags;
-      });
-    }
+    const newEntry: TagEntry = { tag, type: tagType };
 
-    navigate(`/${tagType}/${encodeURIComponent(playerTag)}`);
+    const playerTags = recentTags.filter((entry) => entry.type === "player");
+    const clubTags = recentTags.filter((entry) => entry.type === "club");
+
+    const updatedList =
+      tagType === "player"
+        ? [newEntry, ...playerTags.filter((entry) => entry.tag !== tag)].slice(
+            0,
+            5
+          )
+        : [newEntry, ...clubTags.filter((entry) => entry.tag !== tag)].slice(
+            0,
+            5
+          );
+
+    const mergedTags =
+      tagType === "player"
+        ? [...updatedList, ...clubTags]
+        : [...playerTags, ...updatedList];
+
+    localStorage.setItem("recentTagsV2", JSON.stringify(mergedTags));
+    setRecentTags(mergedTags);
+
+    navigate(`/${tagType}/${encodeURIComponent(tag)}`);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.toUpperCase().replace(/#/g, "");
-    setPlayerTag(value);
+    setTagInput(value);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -83,7 +104,7 @@ const HomePage = () => {
         title="Brawl Stars Stats | Player Trophy Progression & Leaderboards"
         description="Enter a Brawl Stars player or club tag to track trophy stats, battle logs, and leaderboards. View detailed player profiles and more!"
       />
-      
+
       <VStack mt={12} gap={10} align="center" px={4}>
         <Stack align="center" gap={4}>
           <Text fontWeight="bold" fontSize="3xl" textAlign="center" as="h1">
@@ -92,7 +113,7 @@ const HomePage = () => {
 
           <RadioCard.Root
             value={tagType}
-            onValueChange={(e) => setTagType(e.value as "player" | "club")}
+            onValueChange={(e) => setTagType(e.value as TagType)}
             orientation="horizontal"
             align="center"
             justify="center"
@@ -125,7 +146,7 @@ const HomePage = () => {
             <InputGroup>
               <Input
                 placeholder="8L2CCUJ8V"
-                value={playerTag}
+                value={tagInput}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
                 maxWidth="400px"
