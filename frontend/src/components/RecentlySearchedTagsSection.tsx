@@ -132,21 +132,32 @@ const RecentlySearchedTagsSection = ({
     );
   };
 
+  const groups: JSX.Element[] = [];
+  if (validPlayerTags.length > 0) {
+    groups.push(
+      renderTagGroup(validPlayerTags, "player", "Recent Player Tags")
+    );
+  }
+  if (validClubTags.length > 0) {
+    groups.push(renderTagGroup(validClubTags, "club", "Recent Club Tags"));
+  }
+
   return (
     <Grid
       maxW={{ md: "800px" }}
       mx="auto"
-      templateColumns={{ base: "1fr", md: "1fr 1fr" }}
-      columnGap={1}
-      rowGap={1}
+      templateColumns={{
+        base: "1fr",
+        md: groups.length === 1 ? "1fr" : "1fr 1fr",
+      }}
+      gap={5}
+      justifyItems="center"
       alignItems="start"
-      justifyContent="center"
       textAlign="center"
     >
-      {validPlayerTags.length > 0 &&
-        renderTagGroup(validPlayerTags, "player", "Recent Player Tags")}
-      {validClubTags.length > 0 &&
-        renderTagGroup(validClubTags, "club", "Recent Club Tags")}
+      {groups.map((group, index) => (
+        <Box key={index}>{group}</Box>
+      ))}
     </Grid>
   );
 };
