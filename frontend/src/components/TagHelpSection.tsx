@@ -10,13 +10,13 @@ const TagHelpSection = () => {
     {
       id: "player-tag",
       title: "Where is my Player Tag?",
-      text: "Your player tag is located at the top of your profile screen. It's a unique code starting with a # that identifies your account.",
+      text: "Your player tag is located just below your profile icon. It’s a unique code starting with a # that identifies your account.",
       image: "/images/help1.webp",
     },
     {
       id: "club-tag",
       title: "Where is my Club Tag?",
-      text: "You can find your club tag on the main club page, just below the club name. It also begins with a #.",
+      text: "You can find your club tag on the main club page, just below the club description. It also begins with a #.",
       image: "/images/help2.webp",
     },
   ];

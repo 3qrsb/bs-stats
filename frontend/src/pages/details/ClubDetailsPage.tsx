@@ -98,7 +98,7 @@ const ClubDetailsPage = () => {
               <Tag
                 size="lg"
                 variant="outline"
-                colorPalette="orange"
+                colorPalette="purple"
                 cursor="pointer"
                 onClick={() => {
                   navigator.clipboard.writeText(club.tag);

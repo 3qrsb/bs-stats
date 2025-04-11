@@ -145,7 +145,7 @@ const ClubLeaderboardPage = () => {
                       <Tag
                         size="sm"
                         variant="outline"
-                        colorPalette="orange"
+                        colorPalette="purple"
                         cursor="pointer"
                         mr={2}
                         onClick={() => {
