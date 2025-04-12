@@ -24,6 +24,7 @@ import { validateClubTag } from "@/hooks/useClubInfo";
 import type { TagEntry, TagType } from "@/types/search";
 
 const HomePage = () => {
+  const [loading, setLoading] = useState(false);
   const [tagType, setTagType] = useState<TagType>("player");
   const [tagInput, setTagInput] = useState("");
   const [recentTags, setRecentTags] = useState<TagEntry[]>([]);
@@ -43,6 +44,7 @@ const HomePage = () => {
 
   const handleSearch = async () => {
     if (!tagInput) return;
+    setLoading(true);
 
     const tag = tagInput.trim().toUpperCase();
     const isValid =
@@ -57,6 +59,7 @@ const HomePage = () => {
         type: "error",
         duration: 4000,
       });
+      setLoading(false);
       return;
     }
 
@@ -157,6 +160,8 @@ const HomePage = () => {
           </Group>
 
           <Button
+            loading={loading}
+            disabled={!tagInput.trim()}
             size="xl"
             fontSize="lg"
             colorPalette="cyan"
