@@ -13,6 +13,7 @@ import { Tag } from "@/components/ui/tag";
 import { DataListItem, DataListRoot } from "@/components/ui/data-list";
 import LazyImage from "@/components/LazyImage";
 import SEO from "@/components/SEO";
+import ErrorState from "@/components/ErrorState";
 import useClubInfo from "@/hooks/useClubInfo";
 import usePlayerIcons from "@/hooks/BrawlApiIcons/usePlayerIcons";
 import useClubIcons from "@/hooks/BrawlApiIcons/useClubIcons";
@@ -21,7 +22,7 @@ import { formatRoleName } from "@/utils/stringUtils";
 
 const ClubDetailsPage = () => {
   const { clubTag } = useParams<{ clubTag: string }>();
-  const { clubInfos, loading, errors } = useClubInfo([clubTag || ""]);
+  const { clubInfos, loading, errors, refetch } = useClubInfo([clubTag || ""]);
   const {
     playerIcons,
     loading: playerIconsLoading,
@@ -33,7 +34,13 @@ const ClubDetailsPage = () => {
     error: clubIconsError,
   } = useClubIcons();
 
-  if (loading[clubTag || ""] || playerIconsLoading || clubIconsLoading) {
+  const isLoading =
+    loading[clubTag || ""] || playerIconsLoading || clubIconsLoading;
+
+  const combinedError =
+    errors[clubTag || ""] || playerIconsError || clubIconsError;
+
+  if (isLoading) {
     return (
       <Box textAlign="center" mt="8">
         <Spinner size="xl" />
@@ -41,11 +48,12 @@ const ClubDetailsPage = () => {
     );
   }
 
-  if (errors[clubTag || ""] || playerIconsError || clubIconsError) {
+  if (combinedError) {
     return (
-      <Box color="red.500" mt="8" textAlign="center">
-        {errors[clubTag || ""] || playerIconsError || clubIconsError}
-      </Box>
+      <ErrorState
+        message={combinedError}
+        onRetry={refetch}
+      />
     );
   }
 

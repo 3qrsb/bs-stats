@@ -18,6 +18,7 @@ import { Tag } from "@/components/ui/tag";
 import { toaster } from "@/components/ui/toaster";
 import LazyImage from "@/components/LazyImage";
 import SEO from "@/components/SEO";
+import ErrorState from "@/components/ErrorState";
 import usePlayerInfo from "@/hooks/usePlayerInfo";
 import useClubInfo from "@/hooks/useClubInfo";
 import usePlayerIcons from "@/hooks/BrawlApiIcons/usePlayerIcons";
@@ -26,7 +27,9 @@ import { argbToRgba, parseClubName } from "@/utils/colorUtils";
 
 const PlayerDetailsPage = () => {
   const { tag } = useParams();
-  const { playerInfos, loading, errors } = usePlayerInfo(tag ? [tag] : []);
+  const { playerInfos, loading, errors, refetch } = usePlayerInfo(
+    tag ? [tag] : []
+  );
   const { playerIcons } = usePlayerIcons();
   const { clubIcons } = useClubIcons();
 
@@ -47,11 +50,7 @@ const PlayerDetailsPage = () => {
   }
 
   if (error) {
-    return (
-      <Box color="red.500" textAlign="center" mt="8">
-        {error}
-      </Box>
-    );
+    return <ErrorState message={error} onRetry={refetch} />;
   }
 
   if (!playerInfo) {

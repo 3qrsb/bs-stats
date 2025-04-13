@@ -16,6 +16,7 @@ import {
 } from "@chakra-ui/react";
 import LazyImage from "@/components/LazyImage";
 import SEO from "@/components/SEO";
+import ErrorState from "@/components/ErrorState";
 import useBattleLog from "@/hooks/useBattleLog";
 import useBrawlerIcons from "@/hooks/BrawlApiIcons/useBrawlerIcons";
 import useMapIcons from "@/hooks/BrawlApiIcons/useMapIcons";
@@ -23,7 +24,7 @@ import { formatRoleName } from "@/utils/stringUtils";
 
 const BattleLogPage = () => {
   const { tag } = useParams<{ tag: string }>();
-  const { battleLog, loading, error } = useBattleLog(tag || "");
+  const { battleLog, loading, error, refetch } = useBattleLog(tag || "");
   const { brawlerIcons } = useBrawlerIcons();
   const { mapIcons } = useMapIcons();
 
@@ -57,11 +58,7 @@ const BattleLogPage = () => {
   }
 
   if (error) {
-    return (
-      <Box color="red.500" mt="8" textAlign="center">
-        {error}
-      </Box>
-    );
+    return <ErrorState message={error} onRetry={() => refetch()} />;
   }
 
   return (

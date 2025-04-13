@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios, { AxiosError } from "axios";
 import { Player } from "@/types/playerInfo";
 
@@ -11,35 +11,39 @@ const usePlayerInfo = (tags: string[]) => {
   const [loading, setLoading] = useState<Record<string, boolean>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  const fetchPlayerInfo = useCallback(async (tag: string) => {
+    setLoading((prev) => ({ ...prev, [tag]: true }));
+    setErrors((prev) => ({ ...prev, [tag]: "" }));
+
+    try {
+      const response = await axios.get<Player>(`${API_URL}/player/${tag}`);
+      setPlayerInfos((prev) => ({ ...prev, [tag]: response.data }));
+    } catch (err) {
+      const error = err as AxiosError<{ message?: string }>;
+      setErrors((prev) => ({
+        ...prev,
+        [tag]: `Failed to fetch player information: ${
+          error.response?.data?.message || error.message || "Unknown error"
+        }`,
+      }));
+    } finally {
+      setLoading((prev) => ({ ...prev, [tag]: false }));
+    }
+  }, []);
+
   useEffect(() => {
-    const fetchPlayerInfo = async (tag: string) => {
-      setLoading((prev) => ({ ...prev, [tag]: true }));
-      setErrors((prev) => ({ ...prev, [tag]: "" }));
-
-      try {
-        const response = await axios.get<Player>(`${API_URL}/player/${tag}`);
-        setPlayerInfos((prev) => ({ ...prev, [tag]: response.data }));
-      } catch (err) {
-        const error = err as AxiosError<{ message?: string }>;
-        setErrors((prev) => ({
-          ...prev,
-          [tag]: `Failed to fetch player information: ${
-            error.response?.data?.message || error.message || "Unknown error"
-          }`,
-        }));
-      } finally {
-        setLoading((prev) => ({ ...prev, [tag]: false }));
-      }
-    };
-
     tags.forEach((tag) => {
       if (!playerInfos[tag] && !loading[tag] && !errors[tag]) {
         fetchPlayerInfo(tag);
       }
     });
-  }, [tags, playerInfos, loading, errors]);
+  }, [tags, playerInfos, loading, errors, fetchPlayerInfo]);
 
-  return { playerInfos, loading, errors };
+  const refetch = useCallback(() => {
+    tags.forEach((tag) => fetchPlayerInfo(tag));
+  }, [tags, fetchPlayerInfo]);
+
+  return { playerInfos, loading, errors, refetch };
 };
 
 export const validatePlayerTag = async (tag: string): Promise<boolean> => {

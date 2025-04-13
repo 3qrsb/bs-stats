@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios, { AxiosError } from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -43,34 +43,34 @@ const useBattleLog = (playerTag: string) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    const fetchBattleLog = async () => {
-      setLoading(true);
-      setError("");
+  const fetchBattleLog = useCallback(async () => {
+    setLoading(true);
+    setError("");
 
-      try {
-        const response = await axios.get<{ items: BattleLogEntry[] }>(
-          `${API_URL}/battlelog/${playerTag}`
-        );
-        setBattleLog(response.data?.items || []);
-      } catch (err) {
-        const error = err as AxiosError<{ message?: string }>;
-        setError(
-          `Failed to fetch battle log: ${
-            error.response?.data?.message || error.message || "Unknown error"
-          }`
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (playerTag) {
-      fetchBattleLog();
+    try {
+      const response = await axios.get<{ items: BattleLogEntry[] }>(
+        `${API_URL}/battlelog/${playerTag}`
+      );
+      setBattleLog(response.data?.items || []);
+    } catch (err) {
+      const error = err as AxiosError<{ message?: string }>;
+      setError(
+        `Failed to fetch battle log: ${
+          error.response?.data?.message || error.message || "Unknown error"
+        }`
+      );
+    } finally {
+      setLoading(false);
     }
   }, [playerTag]);
 
-  return { battleLog, loading, error };
+  useEffect(() => {
+    if (playerTag) {
+      fetchBattleLog();
+    }
+  }, [playerTag, fetchBattleLog]);
+
+  return { battleLog, loading, error, refetch: fetchBattleLog };
 };
 
 export default useBattleLog;
