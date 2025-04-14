@@ -1,5 +1,7 @@
-import { Box, Text, Flex, Link, Icon } from "@chakra-ui/react";
-import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
+import { Box, Text, Flex, Link } from "@chakra-ui/react";
+import FacebookIcon from "../icons/FacebookIcon";
+import XIcon from "../icons/XIcon";
+import InstagramIcon from "../icons/InstagramIcon";
 
 const Footer = () => {
   return (
@@ -32,43 +34,25 @@ const Footer = () => {
         </Text>
 
         <Flex gap={4} justify="center">
-          <Link href="https://www.facebook.com">
-            <Icon w={6} h={6} color="white" _hover={{ color: "blue.500" }}>
-              <FaFacebook />
-            </Icon>
+          <Link href="https://www.facebook.com" aria-label="Facebook">
+            <FacebookIcon width={24} height={24} />
           </Link>
-          <Link href="https://www.twitter.com">
-            <Icon w={6} h={6} color="white" _hover={{ color: "blue.400" }}>
-              <FaTwitter />
-            </Icon>
+          <Link href="https://www.twitter.com" aria-label="Twitter (X)">
+            <XIcon width={24} height={24} />
           </Link>
-          <Link href="https://www.instagram.com">
-            <Icon w={6} h={6} color="white" _hover={{ color: "pink.500" }}>
-              <FaInstagram />
-            </Icon>
+          <Link href="https://www.instagram.com" aria-label="Instagram">
+            <InstagramIcon width={24} height={24} />
           </Link>
         </Flex>
 
-        <Flex gap={4} justify="center">
-          <Link
-            href="/privacy-policy"
-            color="white"
-            _hover={{ textDecoration: "underline" }}
-          >
+        <Flex gap={4}>
+          <Link href="/privacy-policy" color="white">
             Privacy Policy
           </Link>
-          <Link
-            href="/terms-of-service"
-            color="white"
-            _hover={{ textDecoration: "underline" }}
-          >
+          <Link href="/terms-of-service" color="white">
             Terms of Service
           </Link>
-          <Link
-            href="/contact"
-            color="white"
-            _hover={{ textDecoration: "underline" }}
-          >
+          <Link href="/contact" color="white">
             Contact
           </Link>
         </Flex>
