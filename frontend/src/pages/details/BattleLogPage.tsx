@@ -19,12 +19,16 @@ import SEO from "@/components/SEO";
 import ErrorState from "@/components/ErrorState";
 import MapModal from "@/components/MapModal";
 import useBattleLog from "@/hooks/useBattleLog";
+import usePlayerInfo from "@/hooks/usePlayerInfo";
 import useBrawlerIcons from "@/hooks/BrawlApiIcons/useBrawlerIcons";
 import useMapIcons from "@/hooks/BrawlApiIcons/useMapIcons";
 import { formatRoleName } from "@/utils/stringUtils";
 
 const BattleLogPage = () => {
   const { tag } = useParams<{ tag: string }>();
+  const { playerInfos } = usePlayerInfo(tag ? [tag] : []);
+  const playerInfo = playerInfos[tag!];
+  const name = playerInfo?.name || tag;
   const { battleLog, loading, error, refetch } = useBattleLog(tag || "");
   const { brawlerIcons } = useBrawlerIcons();
   const { mapIcons } = useMapIcons();
